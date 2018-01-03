@@ -498,7 +498,10 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
                 let messageIds:[String] = ack.getMessageIds()!
                 for id in messageIds {
                     let msgArray = self.message.filter({ (msg) -> Bool in
+                        if msg.message_id != nil {
                         return msg.message_id!  == id
+                        }
+                        return false
                     })
                     if !msgArray.isEmpty {
                         self.ack = true

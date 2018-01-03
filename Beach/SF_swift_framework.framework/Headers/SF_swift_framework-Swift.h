@@ -561,6 +561,7 @@ SWIFT_CLASS("_TtC18SF_swift_framework15CoreDataManager")
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) CoreDataManager * _Nonnull sharedInstance;)
 + (CoreDataManager * _Nonnull)sharedInstance SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
+- (NSManagedObjectContext * _Nonnull)getContext SWIFT_WARN_UNUSED_RESULT;
 - (void)saveLoginDetailsWithLoginData:(NSDictionary<NSString *, id> * _Nonnull)loginData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
 - (void)saveRoasterWithRosterData:(NSArray<NSDictionary<NSString *, id> *> * _Nonnull)rosterData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
 - (void)saveChatHistoryWithChatData:(NSArray<NSDictionary<NSString *, id> *> * _Nonnull)chatData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
