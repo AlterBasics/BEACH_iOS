@@ -1,6 +1,0 @@
-framework module Pods_BeachUITests {
-  umbrella header "Pods-BeachUITests-umbrella.h"
-
-  export *
-  module * { export * }
-}
