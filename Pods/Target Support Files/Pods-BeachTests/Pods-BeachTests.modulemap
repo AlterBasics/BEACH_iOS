@@ -1,0 +1,6 @@
+framework module Pods_BeachTests {
+  umbrella header "Pods-BeachTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
