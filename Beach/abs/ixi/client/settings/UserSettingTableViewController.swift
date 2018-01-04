@@ -55,9 +55,7 @@ class UserSettingTableViewController: UITableViewController {
     
     override public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
         if indexPath.row == 1 {
-            SDKLoader.shutdownSDK()
             UIApplication.shared.unregisterForRemoteNotifications()
-            UserDefaults.standard.set(-1, forKey: "RosterVersion")
             let storyBoard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
             let vc = (storyBoard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController)!
             Constants.appDelegate.window!.rootViewController = vc

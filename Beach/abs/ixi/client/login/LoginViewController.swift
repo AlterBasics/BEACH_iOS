@@ -12,6 +12,7 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
     
     @IBAction func loginButtonAction(_ sender: Any) {
         loginBtn.isEnabled = false
+       Constants.appDelegate.addActivitiIndicaterView()
         self.login()
     }
     
@@ -27,8 +28,7 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        SDKLoader.shutdownSDK()
-        SDKLoader.loadSDK(server: "188.166.251.121", port: 5222)
+         SDKLoader.shutdownSDK()
     }
     
     
@@ -40,6 +40,8 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
     
     func login(){
         do{
+           
+            SDKLoader.loadSDK(server: "188.166.251.121", port: 5222)
             try Platform.getInstance().getUserManager().login(userName: usernameTextField.text!, password: password.text!,  domain:"alterbasics.com", success: { (String) in
                 do {
                     _ = try Platform.getInstance().getUserManager().getFullRoster()
@@ -52,14 +54,17 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
                     
                 }
                 DispatchQueue.main.async {
+                    self.loginBtn.isEnabled  = true
+                    self.errorLabel.isHidden = true
+                    Constants.appDelegate.hideActivitiIndicaterView()
                     let storyBoard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
                     let vc = (storyBoard.instantiateViewController(withIdentifier: "ChatterTabBarController") as? ChatterTabBarController)!
                     self.present(vc, animated: true, completion: nil)
-                    self.loginBtn.isEnabled  = true
-                    self.errorLabel.isHidden = true
+                  
                 }
             }, failure: { (str) in
                 DispatchQueue.main.async {
+                    Constants.appDelegate.hideActivitiIndicaterView()
                     self.errorLabel.isHidden = false
                     self.errorLabel.text  = str
                     self.loginBtn.isEnabled  = true

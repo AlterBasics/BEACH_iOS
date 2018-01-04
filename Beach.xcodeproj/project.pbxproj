@@ -11,9 +11,9 @@
 		6A3D45D41DA867E3432A25EC /* Pods_BeachTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E03C1509DFF1E8DD33143A2D /* Pods_BeachTests.framework */; };
 		740D33F51FFD1D5F0001D2DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 740D33F11FFD1D5F0001D2DC /* Main.storyboard */; };
 		740D33F61FFD1D5F0001D2DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 740D33F31FFD1D5F0001D2DC /* LaunchScreen.storyboard */; };
-		740D33F81FFD208E0001D2DC /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 740D33F71FFD208D0001D2DC /* SF_swift_framework.framework */; };
-		740D33F91FFD20AE0001D2DC /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 740D33F71FFD208D0001D2DC /* SF_swift_framework.framework */; };
-		740D33FA1FFD20AE0001D2DC /* SF_swift_framework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 740D33F71FFD208D0001D2DC /* SF_swift_framework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7454889C1FFE6CC0002F6508 /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7454889B1FFE6CC0002F6508 /* SF_swift_framework.framework */; };
+		7454889D1FFE6CD2002F6508 /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7454889B1FFE6CC0002F6508 /* SF_swift_framework.framework */; };
+		7454889E1FFE6CD2002F6508 /* SF_swift_framework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7454889B1FFE6CC0002F6508 /* SF_swift_framework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7495677F1FF530A60024CECB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7495677E1FF530A60024CECB /* AppDelegate.swift */; };
 		749567891FF530A60024CECB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 749567881FF530A60024CECB /* Assets.xcassets */; };
 		749567971FF530A70024CECB /* BeachTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567961FF530A70024CECB /* BeachTests.swift */; };
@@ -69,7 +69,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				740D33FA1FFD20AE0001D2DC /* SF_swift_framework.framework in Embed Frameworks */,
+				7454889E1FFE6CD2002F6508 /* SF_swift_framework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,7 +83,7 @@
 		55724E0643FAAA240A1128F9 /* Pods_BeachUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeachUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		740D33F21FFD1D5F0001D2DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Main.storyboard; sourceTree = "<group>"; };
 		740D33F41FFD1D5F0001D2DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		740D33F71FFD208D0001D2DC /* SF_swift_framework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SF_swift_framework.framework; sourceTree = "<group>"; };
+		7454889B1FFE6CC0002F6508 /* SF_swift_framework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SF_swift_framework.framework; sourceTree = "<group>"; };
 		7495677B1FF530A60024CECB /* Beach.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beach.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7495677E1FF530A60024CECB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		749567881FF530A60024CECB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -132,8 +132,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				740D33F81FFD208E0001D2DC /* SF_swift_framework.framework in Frameworks */,
-				740D33F91FFD20AE0001D2DC /* SF_swift_framework.framework in Frameworks */,
+				7454889C1FFE6CC0002F6508 /* SF_swift_framework.framework in Frameworks */,
+				7454889D1FFE6CD2002F6508 /* SF_swift_framework.framework in Frameworks */,
 				67BFD311B87978C3DBCED70F /* Pods_Beach.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -182,7 +182,7 @@
 		7495677D1FF530A60024CECB /* Beach */ = {
 			isa = PBXGroup;
 			children = (
-				740D33F71FFD208D0001D2DC /* SF_swift_framework.framework */,
+				7454889B1FFE6CC0002F6508 /* SF_swift_framework.framework */,
 				749567B81FF531530024CECB /* abs */,
 				749567B01FF531530024CECB /* Assets.xcassets */,
 				749567B11FF531530024CECB /* Base.lproj */,
@@ -853,6 +853,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Beach",
+					"$(PROJECT_DIR)/Beach/abs",
 				);
 				INFOPLIST_FILE = Beach/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -878,6 +879,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Beach",
+					"$(PROJECT_DIR)/Beach/abs",
 				);
 				INFOPLIST_FILE = Beach/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

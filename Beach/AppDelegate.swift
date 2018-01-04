@@ -15,6 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
     var presentViewController:UIViewController!
     static var sdkLoader:SDKLoader!
+    var activityindicater:UIActivityIndicatorView! = nil
+    var activityindicaterView:UIView! = nil
+    var indicator:Bool = false
     
     //MARK: Application Delegates
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -53,15 +56,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: true)
-        Platform.getInstance().getUserManager().signalNegotiationQueue()
-        _  = ConnectionManager.getInstance().reconnectAsync()
+        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserDetail", jid: "", success: { (users:[UserDetail]) in
+            
+            if !users.isEmpty && users[0].login {
+                ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: true)
+                Platform.getInstance().getUserManager().signalNegotiationQueue()
+                _  = ConnectionManager.getInstance().reconnectAsync()
+            }
+        },failure: { (String) in
+            print(String)
+        })
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
     
     
     
     func applicationWillTerminate(_ application: UIApplication) {
+        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserDetail", jid: "", success: { (users:[UserDetail]) in
+            
+            if !users.isEmpty && users[0].login {
+        Platform.getInstance().shutdown()
+            }
+        },failure: { (String) in
+            print(String)
+        })
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
@@ -92,9 +110,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // [START disconnect_gcm_service]
     func applicationDidEnterBackground(_ application: UIApplication) {
+        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserDetail", jid: "", success: { (users:[UserDetail]) in
+            
+            if !users.isEmpty && users[0].login {
         ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: false)
         Platform.getInstance().getUserManager().closeStream()
-        
+            }
+        },failure: { (String) in
+            print(String)
+        })
         
         //        GCMService.sharedInstance().disconnect()
         // [START_EXCLUDE]
@@ -209,7 +233,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             do {
                 try context.save()
                 if sfContext.hasChanges {
-                   try sfContext.save()
+                    try sfContext.save()
                 }
             } catch {
                 // Replace this implementation with code to handle the error appropriately.
@@ -282,6 +306,68 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         application.registerForRemoteNotifications()
+    }
+    // MARK: - Activity indicator
+    //: Add Activity indicator in view controller
+    func addActivitiIndicaterView() {
+        print("add indicator")
+        if indicator == false {
+            self.activityindicaterView = UIView.init(frame: CGRect(x: 0, y: 0, width: (self.window?.frame.size.width)!, height: (self.window?.frame.size.height)!))
+            
+            self.activityindicaterView.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.5)
+            
+            self.activityindicater = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
+            
+            self.activityindicater.center = ((self.window?.center)!)
+            
+            self.activityindicaterView.addSubview(self.activityindicater)
+            self.window?.addSubview(self.activityindicaterView)
+            self.activityindicater.startAnimating()
+            indicator = true
+        }
+        else {
+            DispatchQueue.main.async {
+                if (self.activityindicater != nil)
+                {
+                    if self.indicator == false {
+                        self.activityindicater.stopAnimating()
+                        self.activityindicaterView.isHidden = true
+                        self.activityindicaterView = nil
+                        self.activityindicater = nil
+                        
+                        self.activityindicaterView = UIView.init(frame: CGRect(x: 0, y: 0, width: (self.window?.frame.size.width)!, height: (self.window?.frame.size.height)!))
+                        
+                        self.activityindicaterView.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.5)
+                        
+                        self.activityindicater = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
+                        
+                        self.activityindicater.center = ((self.window?.center)!)
+                        
+                        self.activityindicaterView.addSubview(self.activityindicater)
+                        self.window?.addSubview(self.activityindicaterView)
+                        self.activityindicater.startAnimating()
+                        self.indicator = true
+                    }
+                }
+                
+            }
+            
+        }
+    }
+    
+    // : - Add Activity indicator in view controller
+    func hideActivitiIndicaterView()  {
+        print("hide indicator")
+        DispatchQueue.main.async {
+            if (self.activityindicater != nil)
+            {
+                self.activityindicater.stopAnimating()
+                self.activityindicaterView.isHidden = true
+                self.activityindicaterView = nil
+                self.activityindicater = nil
+                self.indicator = false
+            }
+        }
     }
 }
 

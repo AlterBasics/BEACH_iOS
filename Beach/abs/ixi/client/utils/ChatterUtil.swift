@@ -103,7 +103,7 @@ public class ChatterUtil {
             
             if(timeIntervalInPeriod == "1" && period != self.TimeIntervals.MS.rawValue && period != self.TimeIntervals.Ages.rawValue) {
                 
-                period = period.substring(to: period.index(before: period.endIndex));
+                period = String(period[ ..<period.index(before: period.endIndex)])
             }
             
             if(period == self.TimeIntervals.MS.rawValue) {
@@ -165,43 +165,7 @@ public class ChatterUtil {
         case Decades = "decades"
         case Ages = "ages"
     }
-    
-    // MARK: - Activity indicator
-    //: Add Activity indicator in view controller
-    public static func addActivitiIndicaterView( viewController: UIView) {
-        print("add indicator")
-        if indicator == false {
-            self.activityindicaterView = UIView.init(frame: CGRect(x: 0, y: 0, width: viewController.frame.size.width, height: viewController.frame.size.height))
-            
-            self.activityindicaterView.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.5)
-            
-            self.activityindicater = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
-            
-            self.activityindicater.center = (viewController.center)
-            
-            self.activityindicaterView.addSubview(self.activityindicater)
-            viewController.addSubview(self.activityindicaterView)
-            self.activityindicater.startAnimating()
-            indicator = true
-        }
-        
-    }
-    
-    // : - Add Activity indicator in view controller
-    public static func hideActivitiIndicaterView()  {
-        print("hide indicator")
-        DispatchQueue.main.async {
-            if (self.activityindicater != nil)
-            {
-                self.activityindicater.stopAnimating()
-                self.activityindicaterView.isHidden = true
-                self.activityindicaterView = nil
-                self.activityindicater = nil
-                self.indicator = false
-            }
-        }
-    }
-    
+
     // MARK:- Set Navigation bar color and image etc
     public static func setNavigationBar() -> Void {
         //  UITabBar.appearance().tintColor = UIColor(red:199/255.0, green:199/255.0, blue:199/255.0, alpha:1.0)
