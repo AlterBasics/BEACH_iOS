@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     //MARK: Application Delegates
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+         self.window = UIWindow(frame: UIScreen.main.bounds)
         //Load SDK
         SDKLoader.loadSDK(server: "188.166.251.121", port: 5222)
         //NEtwork reachability
@@ -56,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserDetail", jid: "", success: { (users:[UserDetail]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
             
             if !users.isEmpty && users[0].login {
                 ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: true)
@@ -72,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func applicationWillTerminate(_ application: UIApplication) {
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserDetail", jid: "", success: { (users:[UserDetail]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
             
             if !users.isEmpty && users[0].login {
         Platform.getInstance().shutdown()
@@ -110,7 +111,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // [START disconnect_gcm_service]
     func applicationDidEnterBackground(_ application: UIApplication) {
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserDetail", jid: "", success: { (users:[UserDetail]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
             
             if !users.isEmpty && users[0].login {
         ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: false)
@@ -228,7 +229,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func saveContext () {
         let context = persistentContainer.viewContext
-        let sfContext = CoreDataManager.sharedInstance.getContext()
+        let sfContext = SFCoreDataManager.sharedInstance.getContext()
         if context.hasChanges {
             do {
                 try context.save()
@@ -247,7 +248,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     ///MARK:  Get Root ViewController Of App
     func getRootViewController(){
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserDetail", jid: "", success: { (users:[UserDetail]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
             
             if !users.isEmpty && users[0].login {
                 do{
@@ -262,8 +263,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         catch {
                             
                         }
-                    }, failure: { (String) in
-                        print(String)
+                    }, failure: { (str) in
+                        print(str)
                     })
                     
                     let storyBoard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
@@ -281,7 +282,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let objLoginViewController = (storyBoard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController)!;
                 self.window!.rootViewController = objLoginViewController
             }
-        },failure: { (String) in
+        },failure: { (str) in
             let storyBoard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
             
             let objLoginViewController = (storyBoard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController)!;

@@ -125,7 +125,7 @@ class GroupDetailViewController: UIViewController, UITableViewDelegate, UITableV
     
     //MARK: - Get Data from Database
     func getGroupData(){
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "Rosters", jid: self.recieveUser.getBareJID(), success: { (users:[Rosters]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Rosters", jid: self.recieveUser.getBareJID(), success: { (users:[Rosters]) in
             if !users.isEmpty {
                 self.groupImage.image =  #imageLiteral(resourceName: "group")
                 

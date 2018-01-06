@@ -280,13 +280,13 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     // MARK: - Get Chat Data from database
     
     public func getChatData(){
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "ChatStore", jid: self.recieveUser.getBareJID(), success: { (chats:[ChatStore]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "ChatStore", jid: self.recieveUser.getBareJID(), success: { (chats:[ChatStore]) in
             
-            CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "Conversation", jid: self.recieveUser.getBareJID(), success: { (activeChats:[Conversation]) in
+            SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Conversation", jid: self.recieveUser.getBareJID(), success: { (activeChats:[Conversation]) in
                 if !activeChats.isEmpty {
                     self.chatNO = Int(activeChats[0].unread_chatline_count)
                 }
-                CoreDataManager.sharedInstance.updateUnreadCount(jid: self.recieveUser.getBareJID(), unread_chatline_count: 0)
+                SFCoreDataManager.sharedInstance.updateUnreadCount(jid: self.recieveUser.getBareJID(), unread_chatline_count: 0)
             }, failure: { (String) in
                 
             })
@@ -389,7 +389,7 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     
     //MARK:- set detail of user related to view
     func setUser(){
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "Rosters", jid: self.recieveUser.getBareJID(), success: { (users:[Rosters]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Rosters", jid: self.recieveUser.getBareJID(), success: { (users:[Rosters]) in
             if !users.isEmpty {
                 self.userName.text = users[0].name
                 self.userView.isHidden = true
@@ -433,7 +433,7 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     
     //Mark:- Get Logged User Detail
     func getUserDetail(){
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserDetail", jid: "", success: { (users:[UserDetail]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
             if !users.isEmpty {
                 do {
                     try self.user = JID(jid: users[0].userJid)

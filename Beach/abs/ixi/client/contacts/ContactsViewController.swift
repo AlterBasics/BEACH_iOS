@@ -179,7 +179,7 @@ public class ContactsViewController: UIViewController, UITableViewDelegate, UITa
     
     
     func getRosterData(){
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "Rosters",jid: nil, success: { (rosters:[Rosters]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Rosters",jid: nil, success: { (rosters:[Rosters]) in
             let sortedArray = rosters.sorted { $0.name?.localizedCaseInsensitiveCompare($1.name!) == ComparisonResult.orderedAscending }
             self.userName = sortedArray
             DispatchQueue.main.async {
@@ -192,7 +192,7 @@ public class ContactsViewController: UIViewController, UITableViewDelegate, UITa
     }
     
     func getPresenceData() {
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserPresence",jid: nil, success: { (presences:[UserPresence]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "UserPresence",jid: nil, success: { (presences:[UserPresence]) in
             self.presence = presences
             DispatchQueue.main.async {
                 self.contactsTableView.reloadData()

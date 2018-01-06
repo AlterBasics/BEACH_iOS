@@ -554,25 +554,6 @@ SWIFT_CLASS_NAMED("Conversation")
 @property (nonatomic) int64_t update_time;
 @end
 
-@class NSError;
-
-SWIFT_CLASS("_TtC18SF_swift_framework15CoreDataManager")
-@interface CoreDataManager : NSObject
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) CoreDataManager * _Nonnull sharedInstance;)
-+ (CoreDataManager * _Nonnull)sharedInstance SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-- (NSManagedObjectContext * _Nonnull)getContext SWIFT_WARN_UNUSED_RESULT;
-- (void)saveLoginDetailsWithLoginData:(NSDictionary<NSString *, id> * _Nonnull)loginData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
-- (void)saveRoasterWithRosterData:(NSArray<NSDictionary<NSString *, id> *> * _Nonnull)rosterData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
-- (void)saveChatHistoryWithChatData:(NSArray<NSDictionary<NSString *, id> *> * _Nonnull)chatData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
-- (void)saveActiveChatWithChatData:(NSDictionary<NSString *, id> * _Nonnull)chatData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
-- (void)saveUserPresenceWithPresenceData:(NSDictionary<NSString *, id> * _Nonnull)presenceData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
-- (void)saveChatStoreWithChatData:(NSDictionary<NSString *, id> * _Nonnull)chatData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
-- (void)getUndeliveredMessagesWithSuccess:(void (^ _Nonnull)(NSArray<ChatStore *> * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
-- (void)deleteEntityWithEntityName:(NSString * _Nonnull)entityName jid:(NSString * _Null_unspecified)jid success:(void (^ _Nonnull)(NSString * _Nullable))success failure:(void (^ _Nonnull)(NSError * _Nonnull))failure;
-- (void)updateUnreadCountWithJid:(NSString * _Nonnull)jid unread_chatline_count:(int64_t)unread_chatline_count;
-@end
-
 
 /// This extremely simple implementation for XML element. It does not support
 /// many features offered in XML specification for an implement. However it is
@@ -1043,6 +1024,40 @@ SWIFT_CLASS("_TtC18SF_swift_framework11SASLFeature")
 - (NSString * _Null_unspecified)getXmlns SWIFT_WARN_UNUSED_RESULT;
 @end
 
+@class NSError;
+
+SWIFT_CLASS("_TtC18SF_swift_framework17SFCoreDataManager")
+@interface SFCoreDataManager : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SFCoreDataManager * _Nonnull sharedInstance;)
++ (SFCoreDataManager * _Nonnull)sharedInstance SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+- (NSManagedObjectContext * _Nonnull)getContext SWIFT_WARN_UNUSED_RESULT;
+- (void)saveLoginDetailsWithLoginData:(NSDictionary<NSString *, id> * _Nonnull)loginData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)saveRoasterWithRosterData:(NSArray<NSDictionary<NSString *, id> *> * _Nonnull)rosterData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)saveChatHistoryWithChatData:(NSArray<NSDictionary<NSString *, id> *> * _Nonnull)chatData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)saveActiveChatWithChatData:(NSDictionary<NSString *, id> * _Nonnull)chatData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)saveUserPresenceWithPresenceData:(NSDictionary<NSString *, id> * _Nonnull)presenceData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)saveChatStoreWithChatData:(NSDictionary<NSString *, id> * _Nonnull)chatData success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)getUndeliveredMessagesWithSuccess:(void (^ _Nonnull)(NSArray<ChatStore *> * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)deleteEntityFromDataBaseWithEntityName:(NSString * _Nonnull)entityName jid:(NSString * _Null_unspecified)jid success:(void (^ _Nonnull)(NSString * _Nullable))success failure:(void (^ _Nonnull)(NSError * _Nonnull))failure;
+- (void)updateUnreadCountWithJid:(NSString * _Nonnull)jid unread_chatline_count:(int64_t)unread_chatline_count;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework12SFUserDetail")
+@interface SFUserDetail : NSManagedObject
+- (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+@interface SFUserDetail (SWIFT_EXTENSION(SF_swift_framework))
+@property (nonatomic, copy) NSString * _Nullable domain;
+@property (nonatomic) BOOL login;
+@property (nonatomic, copy) NSString * _Nullable password;
+@property (nonatomic, copy) NSString * _Nullable user_name;
+@property (nonatomic, copy) NSString * _Nullable userJid;
+@end
+
 
 SWIFT_CLASS("_TtC18SF_swift_framework8SMEnable")
 @interface SMEnable : XMPPPacket
@@ -1203,21 +1218,6 @@ SWIFT_CLASS("_TtC18SF_swift_framework10TLSFeature")
 - (NSString * _Null_unspecified)getXmlns SWIFT_WARN_UNUSED_RESULT;
 @end
 
-
-
-SWIFT_CLASS("_TtC18SF_swift_framework10UserDetail")
-@interface UserDetail : NSManagedObject
-- (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
-@end
-
-
-@interface UserDetail (SWIFT_EXTENSION(SF_swift_framework))
-@property (nonatomic, copy) NSString * _Nullable domain;
-@property (nonatomic) BOOL login;
-@property (nonatomic, copy) NSString * _Nullable password;
-@property (nonatomic, copy) NSString * _Nullable user_name;
-@property (nonatomic, copy) NSString * _Nullable userJid;
-@end
 
 
 /// { UserManager} is the top level entity which has all the convinience

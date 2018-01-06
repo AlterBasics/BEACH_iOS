@@ -64,7 +64,7 @@ class UserSettingTableViewController: UITableViewController {
     
     //MARK:- Get Data from Database
     func getData(){
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserDetail", jid: "", success: { (users:[UserDetail]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
             if !users.isEmpty {
                 do {
                     try self.userName = JID(jid: users[0].userJid)

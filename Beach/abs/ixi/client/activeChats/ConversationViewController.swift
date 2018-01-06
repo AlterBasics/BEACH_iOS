@@ -170,7 +170,7 @@ public class ConversationViewController: UIViewController, UITableViewDelegate, 
                 
                 myalert.addAction(UIAlertAction(title: "Delete", style: .default) { (action:UIAlertAction!) in
                     print("Selected")
-                    CoreDataManager.sharedInstance.deleteEntity(entityName: "Conversation", jid:self.userName[editActionsForRowAt.row].peer_jid, success: { (String) in
+                    SFCoreDataManager.sharedInstance.deleteEntityFromDataBase(entityName: "Conversation", jid:self.userName[editActionsForRowAt.row].peer_jid, success: { (String) in
                         print(String!)
                         self.userName.remove(at: editActionsForRowAt.row)
                         self.chatsTableView.reloadData()
@@ -199,7 +199,7 @@ public class ConversationViewController: UIViewController, UITableViewDelegate, 
     //MARK:- get Data from Database
     //Get Presence Data
     func getPresenceData(){
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "UserPresence",jid: nil, success: { (presences:[UserPresence]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "UserPresence",jid: nil, success: { (presences:[UserPresence]) in
             self.presence = []
             for user in presences {
                 self.presence.append(user)
@@ -214,7 +214,7 @@ public class ConversationViewController: UIViewController, UITableViewDelegate, 
     
     //Get ActiveChat Data
     func getChatData() {
-        CoreDataManager.sharedInstance.getUserInfoFromDataBase(entityName: "Conversation", jid: nil, success: { (activeChats:[Conversation]) in
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Conversation", jid: nil, success: { (activeChats:[Conversation]) in
             self.userName = activeChats
             self.userName = self.userName.sorted(by: { $0.update_time > $1.update_time })
             DispatchQueue.main.async {
