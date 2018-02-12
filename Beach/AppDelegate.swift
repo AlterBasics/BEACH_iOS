@@ -21,12 +21,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     //MARK: Application Delegates
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-         self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.window = UIWindow(frame: UIScreen.main.bounds)
         //Load SDK
         SDKLoader.loadSDK(server: "188.166.251.121", port: 5222)
         //NEtwork reachability
         _ = ReachabilityManager.sharedManager
-        //        ChatterUtil.setNavigationBar()
+        ChatterUtil.setNavigationBar()
         
         //Configure Firebase
         FirebaseApp.configure()
@@ -76,7 +76,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
             
             if !users.isEmpty && users[0].login {
-        Platform.getInstance().shutdown()
+                Platform.getInstance().shutdown()
             }
         },failure: { (String) in
             print(String)
@@ -114,8 +114,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
             
             if !users.isEmpty && users[0].login {
-        ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: false)
-        Platform.getInstance().getUserManager().closeStream()
+                ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: false)
+                Platform.getInstance().getUserManager().closeStream()
             }
         },failure: { (String) in
             print(String)
@@ -393,7 +393,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         
         // Print full message.
         print(userInfo)
-        if presentViewController != nil && presentViewController.isKind(of: UserChatViewController.self) && userInfo["from_jid"] as! String == (presentViewController as! UserChatViewController).getJid() && (UIApplication.shared.applicationState != UIApplicationState.background) {
+        if presentViewController != nil && presentViewController.isKind(of: UserChatViewController.self) && userInfo["from_jid"] != nil && userInfo["from_jid"] as! String == (presentViewController as! UserChatViewController).getJid() && (UIApplication.shared.applicationState != UIApplicationState.background) {
             completionHandler([])
         }
             // Change this to your preferred presentation option

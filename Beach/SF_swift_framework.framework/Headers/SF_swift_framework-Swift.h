@@ -219,13 +219,24 @@ SWIFT_CLASS("_TtC18SF_swift_framework10XMPPPacket")
 
 SWIFT_CLASS("_TtC18SF_swift_framework9AckPacket")
 @interface AckPacket : XMPPPacket
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns handledPacketCount:(NSInteger)handledPacketCount OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithElement:(Element * _Nonnull)element error:(NSError * _Nullable * _Nullable)error OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
 - (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
-- (NSArray<NSString *> * _Null_unspecified)getMessageIds SWIFT_WARN_UNUSED_RESULT;
-- (void)setMessageIdsWithMessageIds:(NSArray<NSString *> * _Nonnull)messageIds;
+- (void)setHandledPacketCountWithHandledPacketCount:(NSInteger)handledPacketCount;
 - (NSString * _Nonnull)xml SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework16AckRequestPacket")
+@interface AckRequestPacket : XMPPPacket
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithElement:(Element * _Nonnull)element error:(NSError * _Nullable * _Nullable)error OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (NSString * _Null_unspecified)xml SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @class XMPPStreamManager;
@@ -339,6 +350,123 @@ SWIFT_CLASS("_TtC18SF_swift_framework12CDataSection")
 @end
 
 
+SWIFT_CLASS("_TtC18SF_swift_framework14CMAcknowledged")
+@interface CMAcknowledged : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework11CMDisplayed")
+@interface CMDisplayed : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework10CMMarkable")
+@interface CMMarkable : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework10CMReceived")
+@interface CMReceived : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework9CSNActive")
+@interface CSNActive : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework12CSNComposing")
+@interface CSNComposing : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework7CSNGone")
+@interface CSNGone : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework11CSNInactive")
+@interface CSNInactive : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework9CSNPaused")
+@interface CSNPaused : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
 SWIFT_CLASS("_TtC18SF_swift_framework9Challenge")
 @interface Challenge : XMPPPacket
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
@@ -382,6 +510,25 @@ SWIFT_CLASS("_TtC18SF_swift_framework11ChatManager")
 @interface ChatManager : AbstractPacketForwarder
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithStreamManager:(XMPPStreamManager * _Nonnull)streamManager OBJC_DESIGNATED_INITIALIZER;
+/// Convinience method to send a text message to a {@link JID}. A
+/// {@link Message} packet is created with the given text and sent to
+/// {@link XMPPStreamManager} which writes it on the underlying connection.
+/// @param text
+/// raw text to be sent to server within a message packet
+/// @param to
+/// receiver {@link JID}
+- (void)sayWithMessageId:(NSString * _Nonnull)messageId text:(NSString * _Nonnull)text to:(JID * _Nonnull)to success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+/// A {@link Message} packet is created with the given text and sent to
+/// {@link XMPPStreamManager} which writes it on the underlying connection. A
+/// true value for flag ‘isGroup’ indicates that messages is intended to be
+/// sent to a group.
+/// @param text
+/// raw text to be sent to server within a message packet
+/// @param to
+/// receiver {@link JID}
+/// @param isGroup
+/// true if messages being sent to a group’ otherwise false
+- (void)sayWithMessageId:(NSString * _Nonnull)messageId text:(NSString * _Nonnull)text to:(JID * _Nonnull)to isGroup:(BOOL)isGroup success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
 /// A { Message} packet is created with the given text and sent to
 /// { XMPPStreamManager} which writes it on the underlying connection. A
 /// true value for flag ‘isGroup’ indicates that messages is intended to be
@@ -392,7 +539,65 @@ SWIFT_CLASS("_TtC18SF_swift_framework11ChatManager")
 /// receiver { JID}
 /// @param isGroup
 /// true if messages being sent to a group’ otherwise false
-- (void)sayWithMessageId:(NSString * _Nonnull)messageId text:(NSString * _Nonnull)text to:(JID * _Nonnull)to isGroup:(BOOL)isGroup success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+/// @param isMarkable
+/// true for getting delivery and read receipt.
+- (void)sayWithMessageId:(NSString * _Nonnull)messageId text:(NSString * _Nonnull)text to:(JID * _Nonnull)to isGroup:(BOOL)isGroup isMarkable:(BOOL)isMarkable success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)sayWithConversationId:(NSString * _Null_unspecified)conversationId messageId:(NSString * _Nonnull)messageId text:(NSString * _Nonnull)text to:(JID * _Nonnull)to isGroup:(BOOL)isGroup isMarkable:(BOOL)isMarkable success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+/// A { Message} packet is created with the given text and sent to
+/// { XMPPStreamManager} which writes it on the underlying connection. A
+/// true value for flag ‘isGroup’ indicates that messages is intended to be
+/// sent to a group.And this * message is intended to get delivery and read
+/// receipt according to XEP-0333(Chat-Markers).
+/// @param text
+/// raw text to be sent to server within a message packet
+/// @param to
+/// receiver { JID}
+/// @param isGroup
+/// true if messages being sent to a group’ otherwise false
+- (void)sendMarkableMessageWithCSNWithMessageId:(NSString * _Nonnull)messageId text:(NSString * _Nonnull)text to:(JID * _Nonnull)to isGroup:(BOOL)isGroup success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)sendMarkableMessageWithCSNWithConversationId:(NSString * _Null_unspecified)conversationId messageId:(NSString * _Nonnull)messageId text:(NSString * _Nonnull)text to:(JID * _Nonnull)to isGroup:(BOOL)isGroup success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+/// @param messageId
+/// @param text
+/// @param to
+/// @param isGroup
+/// @param isMarkable is Need Chat Markers (XEP-0333)
+/// @param isCSN is support Chat State Notification (XEP-0085)
+/// @return
+- (BOOL)sendTextMessageWithConversationId:(NSString * _Null_unspecified)conversationId messageId:(NSString * _Nonnull)messageId text:(NSString * _Nonnull)text to:(JID * _Nonnull)to isGroup:(BOOL)isGroup isMarkable:(BOOL)isMarkable isCSNSupported:(BOOL)isCSNSupported SWIFT_WARN_UNUSED_RESULT;
+/// Sending message received receipt to sender explained in XEP-0333(Chat Markers)
+/// @param messageId
+/// received message id
+/// @param to
+/// message sender { JID}
+- (BOOL)sendMsgCMReceivedReceiptWithMessageId:(NSString * _Nonnull)messageId to:(JID * _Nonnull)to SWIFT_WARN_UNUSED_RESULT;
+/// Sending message displayed receipt to sender explained in XEP-0333(Chat Markers)
+/// @param messageId
+/// received message id
+/// @param to
+/// message sender { JID}
+- (BOOL)sendMsgCMDisplayedReceiptWithMessageId:(NSString * _Nonnull)messageId to:(JID * _Nonnull)to SWIFT_WARN_UNUSED_RESULT;
+/// Sending message acknowledged receipt to sender explained in XEP-0333(Chat Markers)
+/// @param messageId
+/// received message id
+/// @param to
+/// message sender { JID}
+- (BOOL)sendMsgCMAcknowledgedReceiptWithMessageId:(NSString * _Nonnull)messageId to:(JID * _Nonnull)to SWIFT_WARN_UNUSED_RESULT;
+/// Sending INACTIVE chat state notification explained in XEP-0085(Chat State Notifications)
+/// @param to
+/// contact { JID}
+- (BOOL)sendInactiveCSNTo:(JID * _Nonnull)to SWIFT_WARN_UNUSED_RESULT;
+/// Sending COMPOSING chat state notification explained in XEP-0085(Chat State Notifications)
+/// @param to
+/// contact { JID}
+- (BOOL)sendComposingCSNTo:(JID * _Nonnull)to SWIFT_WARN_UNUSED_RESULT;
+/// Sending PAUSED chat state notification explained in XEP-0085(Chat State Notifications)
+/// @param to
+/// contact { JID}
+- (BOOL)sendPausedCSNTo:(JID * _Nonnull)to SWIFT_WARN_UNUSED_RESULT;
+/// Sending GONE chat state notification explained in XEP-0085(Chat State Notifications)
+/// @param to
+/// contact {@link JID}
+- (BOOL)sendGoneCSNTo:(JID * _Nonnull)to SWIFT_WARN_UNUSED_RESULT;
 /// Sends message to { XMPPStreamManager} which writes it on the
 /// underlying connection. If the { XMPPStreamManager} is offline (not
 /// ready to send messages), the messages is added to queue which will be
@@ -461,7 +666,7 @@ SWIFT_CLASS("_TtC18SF_swift_framework11ChatManager")
 /// @param mediaId
 /// @param callback
 - (void)retrieveMediaWithMediaId:(NSString * _Nonnull)mediaId success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
-- (void)saveMsgInDatabaseWithMessageId:(NSString * _Nonnull)messageId content:(NSString * _Nonnull)content type:(NSString * _Nonnull)type jid:(NSString * _Nonnull)jid isGroup:(BOOL)isGroup success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
+- (void)saveMsgInDatabaseWithConversationId:(NSString * _Null_unspecified)conversationId messageId:(NSString * _Nonnull)messageId content:(NSString * _Nonnull)content type:(NSString * _Nonnull)type jid:(NSString * _Nonnull)jid isGroup:(BOOL)isGroup isMarkable:(BOOL)isMarkable success:(void (^ _Nonnull)(NSString * _Nonnull))success failure:(void (^ _Nonnull)(NSString * _Nonnull))failure;
 @end
 
 @class ChatRoomMember;
@@ -526,11 +731,14 @@ SWIFT_CLASS_NAMED("ChatStore")
 @property (nonatomic, copy) NSString * _Nullable chatline;
 @property (nonatomic, copy) NSString * _Nullable chatline_type;
 @property (nonatomic) int64_t create_time;
-@property (nonatomic) BOOL delivery_status;
+@property (nonatomic) int16_t delivery_status;
 @property (nonatomic, copy) NSString * _Nullable direction;
+@property (nonatomic) BOOL isMarkable;
 @property (nonatomic, copy) NSString * _Nullable message_id;
 @property (nonatomic, copy) NSString * _Nullable peer_jid;
 @property (nonatomic, copy) NSString * _Nullable peer_res;
+@property (nonatomic, copy) NSString * _Nullable threadId;
+@property (nonatomic) double timeInMilles;
 @property (nonatomic, strong) MediaStore * _Nullable media;
 @property (nonatomic, strong) PollStore * _Nullable poll;
 @end
@@ -775,9 +983,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 + (NSString * _Nonnull)EMPTY SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull SPACE;)
 + (NSString * _Nonnull)SPACE SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithMessageId:(NSString * _Nonnull)messageId OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithElement:(Element * _Nonnull)element error:(NSError * _Nullable * _Nullable)error OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (NSString * _Null_unspecified)xml SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)initWithId:(NSString * _Nonnull)id SWIFT_UNAVAILABLE;
 @end
@@ -789,6 +997,25 @@ SWIFT_CLASS("_TtC18SF_swift_framework11MessageBody")
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
 + (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)initWithContent:(NSString * _Nonnull)content OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework12MessageDelay")
+@interface MessageDelay : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull TIME_FORMAT;)
++ (NSString * _Nonnull)TIME_FORMAT SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithXmlns:(NSString * _Nonnull)xmlns OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getXmlns SWIFT_WARN_UNUSED_RESULT;
+- (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
+- (NSString * _Nonnull)getFrom SWIFT_WARN_UNUSED_RESULT;
+- (void)setFromFrom:(NSString * _Null_unspecified)from;
+- (NSString * _Nonnull)getStamp SWIFT_WARN_UNUSED_RESULT;
+- (void)setStampWithStamp:(NSString * _Nonnull)stamp;
 - (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
 - (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -813,7 +1040,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// A { PacketCollector} implementation to receive inbound { Message}
 /// packets from { abs.ixi.client.ChatManager} and store them in database.
 SWIFT_CLASS("_TtC18SF_swift_framework15MessageReceiver")
-@interface MessageReceiver : AbstractPacketForwarder
+@interface MessageReceiver : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) MessageReceiver * _Nonnull shared;)
++ (MessageReceiver * _Nonnull)shared SWIFT_WARN_UNUSED_RESULT;
++ (void)setShared:(MessageReceiver * _Nonnull)value;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (void)handleWithE:(Event * _Nonnull)e;
 @end
 
 
@@ -823,6 +1055,19 @@ SWIFT_CLASS("_TtC18SF_swift_framework14MessageSubject")
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
 + (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)initWithContent:(NSString * _Nonnull)content OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
+- (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC18SF_swift_framework13MessageThread")
+@interface MessageThread : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull XML_ELM_NAME;)
++ (NSString * _Nonnull)XML_ELM_NAME SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)initWithThreadId:(NSString * _Nonnull)threadId OBJC_DESIGNATED_INITIALIZER;
+- (NSString * _Nonnull)getThreadId SWIFT_WARN_UNUSED_RESULT;
+- (void)setThreadIdWithThreadId:(NSString * _Nonnull)threadId;
 - (NSString * _Null_unspecified)toString SWIFT_WARN_UNUSED_RESULT;
 - (BOOL)isMimeCarrier SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -1151,6 +1396,7 @@ SWIFT_CLASS("_TtC18SF_swift_framework13StreamResumed")
 - (void)setXmlnsWithXmlns:(NSString * _Nonnull)xmlns;
 - (NSString * _Nonnull)getStreamId SWIFT_WARN_UNUSED_RESULT;
 - (void)setStreamIdWithStreamId:(NSString * _Nonnull)streamId;
+- (void)setPrevHandledPacketCountWithPrevHandledPacketCount:(NSInteger)prevHandledPacketCount;
 - (NSString * _Nonnull)xml SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -1448,7 +1694,6 @@ SWIFT_CLASS("_TtC18SF_swift_framework16XMPPPacketReader")
 
 SWIFT_CLASS("_TtC18SF_swift_framework16XMPPPacketWriter")
 @interface XMPPPacketWriter : NSObject <NSStreamDelegate>
-- (nonnull instancetype)initWithConnection:(XMPPConnection * _Nonnull)connection OBJC_DESIGNATED_INITIALIZER;
 - (void)start;
 - (void)runQueue;
 - (void)getOutputStream;

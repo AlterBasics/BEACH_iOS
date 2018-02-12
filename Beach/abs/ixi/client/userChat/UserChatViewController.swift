@@ -1,7 +1,8 @@
 import SF_swift_framework
 import UIKit
 
-public class UserChatViewController: UIViewController , UITableViewDelegate, UITableViewDataSource,UITextViewDelegate, PacketCollector,UIImagePickerControllerDelegate,UINavigationControllerDelegate{
+public class UserChatViewController: UIViewController , UITableViewDelegate, UITableViewDataSource,UITextViewDelegate,ChatListener,UIImagePickerControllerDelegate,UINavigationControllerDelegate{
+    
     
     //MARK: - Outlets & Variables
     @IBOutlet weak var userDetailButton: UIButton!
@@ -32,7 +33,7 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     var user:JID!
     var message:[ChatStore] = []
     var isRefresh = false
-    
+    var cSNStatus = false
     @IBAction func userDetaisAction(_ sender: Any) {
         let groupViewController = self.storyboard?.instantiateViewController(withIdentifier: "GroupDetailViewController") as? GroupDetailViewController
         groupViewController?.recieveUser =  self.recieveUser
@@ -99,15 +100,25 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         }
         
         let messageId = UUID().uuidString
-        
-        Platform.getInstance().getChatManager().say(messageId: messageId, text: self.textView.text, to: recieveUser, isGroup: recieveUserRoster.is_group, success: {(str) in
-            self.ack = false
-            self.getChatData()
-        },failure:{(str) in
-            print(str)
-        })
-        
-        
+        if cSNStatus == false{
+            Platform.getInstance().getChatManager().sendMarkableMessageWithCSN(messageId: messageId, text: self.textView.text, to: recieveUser, isGroup: recieveUserRoster.is_group, success: { (str) in
+                self.ack = false
+                self.cSNStatus = true
+                self.getChatData()
+            }, failure: { (str) in
+                print(str)
+            })
+            
+        }
+        else{
+            Platform.getInstance().getChatManager().say(messageId: messageId, text: self.textView.text, to: recieveUser, isGroup: recieveUserRoster.is_group, isMarkable:!recieveUserRoster.is_group, success: {(str) in
+                self.ack = false
+                self.getChatData()
+            },failure:{(str) in
+                print(str)
+            })
+            
+        }
         self.textView.text = ""
         
     }
@@ -173,7 +184,6 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         attachButton.isHidden = false
         textView.delegate = self
         attachView.isHidden = true
-        self.setCollectorDelegate()
         self.messagingChatTableView.bounces = true
         ChatterUtil.setCirculerView(view: textView, radis: 2, borderColor: UIColor.black, borderWidth: 0.5)
         self.addKeyBoardObserver()
@@ -187,11 +197,14 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         Constants.appDelegate.presentViewController = self
         self.setUser()
         self.isRefresh = false
+        SDKLoader.getMessageReceiver().addChatListener(chatListener: self)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
         Constants.appDelegate.presentViewController = nil
+        SDKLoader.getMessageReceiver().removeChatListener(chatListener: self)
+         _ = Platform.getInstance().getChatManager().sendInactiveCSN(to: recieveUser)
     }
     
     override public func didReceiveMemoryWarning() {
@@ -234,8 +247,14 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
             let cell = tableView.dequeueReusableCell(withIdentifier: "SendTextTableViewCell", for: indexPath) as? SendTextTableViewCell
             cell?.selectionStyle = .none
             cell?.sendTextLabel.text = message[indexPath.row -  1].chatline
-            if message[indexPath.row -  1].delivery_status{
+            if message[indexPath.row -  1].delivery_status == 1{
                 cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "read_tick")
+            }
+            else if (message[indexPath.row -  1].delivery_status == 2 || message[indexPath.row -  1].delivery_status == 3){
+                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "recieved_tick")
+            }
+            else if message[indexPath.row -  1].delivery_status == 4{
+                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "displayed_tick")
             }
             else {
                 cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "unread_tick")
@@ -339,6 +358,9 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     
     //MARK:- TextView Delegate method
     public func textViewDidBeginEditing(_ textView: UITextView) {
+        if cSNStatus{
+         _ = Platform.getInstance().getChatManager().sendComposingCSN(to:recieveUser)
+        }
         if textView.text == "write message..."
         {
             textView.text = ""
@@ -347,7 +369,9 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     }
     
     public func textViewDidEndEditing(_ textView: UITextView) {
-        
+        if cSNStatus{
+        _ = Platform.getInstance().getChatManager().sendPausedCSN(to: recieveUser)
+        }
         if textView.text == ""
         {
             textView.text = "write message..."
@@ -372,6 +396,38 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         return false
     }
     
+    public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        if cSNStatus{
+            _ = Platform.getInstance().getChatManager().sendComposingCSN(to:recieveUser)
+        }
+        return true
+    }
+    
+    public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        if cSNStatus{
+            _ = Platform.getInstance().getChatManager().sendPausedCSN(to:recieveUser)
+        }
+        return true
+    }
+    
+    func text(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        if cSNStatus{
+        NSObject.cancelPreviousPerformRequests(
+            withTarget: self,
+            selector: #selector( self.sendCSNStatus),
+            object: textField)
+        self.perform(
+            #selector(self.sendCSNStatus),
+            with: textField,
+            afterDelay: 0.5)
+    }
+        return true
+    }
+    
+    @objc public func sendCSNStatus(){
+        _ = Platform.getInstance().getChatManager().sendPausedCSN(to: recieveUser)
+    }
     
     func updateTableContentInset() {
         if message.count > 20 {
@@ -397,20 +453,16 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
                     if users[0].is_group{
                         self.userImage.image = #imageLiteral(resourceName: "group")
                         self.userDetailButton.isHidden = false
-                        let infoButton = UIButton(type: .infoDark)
-                        infoButton.addTarget(self, action: #selector(self.userDetaisAction(_:)), for: .touchUpInside)
-                        let barButton = UIBarButtonItem()
-                        barButton.customView = infoButton
-                        self.navigationItem.setRightBarButton(barButton, animated: true)
+                        let image = UIImage(named: "info")
+                        let renderedImage = image?.withRenderingMode(.alwaysOriginal)
+                        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: renderedImage, style: .plain, target: self, action: #selector(self.userDetaisAction(_:)))
                     }
                     else {
                         self.userImage.image = #imageLiteral(resourceName: "profile")
                         self.userDetailButton.isHidden = false
-                        let infoButton = UIButton(type: .detailDisclosure)
-                        infoButton.addTarget(self, action: #selector(self.reportAbuse), for: .touchUpInside)
-                        let barButton = UIBarButtonItem()
-                        barButton.customView = infoButton
-                        self.navigationItem.setRightBarButton(barButton, animated: true)
+                        let image = UIImage(named: "info")
+                        let renderedImage = image?.withRenderingMode(.alwaysOriginal)
+                        self.navigationItem.rightBarButtonItem =  UIBarButtonItem.init(image: renderedImage, style: .plain, target: self, action: #selector(self.reportAbuse))
                         
                     }
                 }
@@ -475,45 +527,100 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         refreshControl.endRefreshing()
         
     }
-    //MARK:- Packet Collector delegate method
-    //Set delegate for packet collector
-    func setCollectorDelegate(){
-        SDKLoader.getMessageReceiver().addPacketCollector(packetName: "Message", collector: self)
-        SDKLoader.getMessageReceiver().addPacketCollector(packetName: "AckPacket", collector: self)
-    }
     
     //collect packet
     public func collect(packet: Packet) {
-        if(packet.isKind(of: Message.self) ){
-            let msg = packet as! Message
-            let from = msg.getFrom()
-            if Constants.appDelegate.presentViewController != nil && from?.getBareJID() == recieveUser.getBareJID(){
-                self.ack = false
-                self.getChatData()
-            }
-        }
-        else if(packet.isKind(of: AckPacket.self) ){
-            let ack:AckPacket =  packet as! AckPacket
-            if ack.getMessageIds() != nil {
-                let messageIds:[String] = ack.getMessageIds()!
-                for id in messageIds {
-                    let msgArray = self.message.filter({ (msg) -> Bool in
-                        if msg.message_id != nil {
-                        return msg.message_id!  == id
-                        }
-                        return false
-                    })
-                    if !msgArray.isEmpty {
-                        self.ack = true
-                        self.getChatData()
-                    }
-                }
-            }
-        }
+        
+        //        else if(packet.isKind(of: AckPacket.self) ){
+        //            let ack:AckPacket =  packet as! AckPacket
+        //            if ack.getMessageIds() != nil {
+        //                let messageIds:[String] = ack.getMessageIds()!
+        //                for id in messageIds {
+        //                    let msgArray = self.message.filter({ (msg) -> Bool in
+        //                        if msg.message_id != nil {
+        //                        return msg.message_id!  == id
+        //                        }
+        //                        return false
+        //                    })
+        //                    if !msgArray.isEmpty {
+        //                        self.ack = true
+        //                        self.getChatData()
+        //                    }
+        //                }
+        //            }
+        //        }
     }
     
     public func collect(packets: [Packet]) {
         
+    }
+    
+    //MARK:- ChatListner Events
+    //event when a message arrived
+    public func onChatLine(packet: Message) {
+        let from = packet.getFrom()
+        if Constants.appDelegate.presentViewController != nil && from?.getBareJID() == recieveUser.getBareJID(){
+            self.ack = false
+            self.getChatData()
+            //                messagingChatTableView.beginUpdates()
+            //                messagingChatTableView.insertRows(at: [IndexPath(row: message.count, section: 0)], with: .automatic)
+            //                messagingChatTableView.endUpdates()
+        }
+    }
+    
+    //event when a Ack arrived
+    public func onServerAck(messageIds:[String:[String]]) {
+        let msgIds = messageIds[recieveUser.getBareJID()]
+        if msgIds != nil {
+            self.ack = true
+            self.getChatData()
+        }
+    }
+    
+    //event when a Meassage Recieved Receipt arrived
+    public func onCMDeliveryReceipt(messageId: String, contactJID: JID) {
+        if contactJID.getBareJID() == recieveUser.getBareJID(){
+            getChatData()
+        }
+        
+    }
+    
+    //event when a Meassage Acknowldgement Receipt arrived
+    public func onCMAcknowledgeReceipt(messageId: String, contactJID: JID) {
+        if contactJID.getBareJID() == recieveUser.getBareJID(){
+            getChatData()
+        }
+    }
+    
+    //event when a Meassage Displayed Receipt arrived
+    public func onCMDisplayedReceipt(messageId: String, contactJID: JID) {
+        if contactJID.getBareJID() == recieveUser.getBareJID(){
+            getChatData()
+        }
+    }
+    
+    //event when Chat state notification Active arrive
+    public func onActiveCSN(contactJID: JID) {
+        self.cSNStatus = true
+    }
+    //event when Chat state notification Composing arrive
+    public func onComposingCSN(contactJID: JID) {
+        self.title =  self.recieveUserRoster.name! + "\n is Typing..."
+    }
+    
+    //event when Chat state notification pause arrive
+    public func onPausedCSN(contactJID: JID) {
+        self.title =  self.recieveUserRoster.name
+    }
+    
+    //event when Chat state notification inactive arrive
+    public func onInactiveCSN(contactJID: JID) {
+        self.title =  self.recieveUserRoster.name
+    }
+    
+    //event when Chat state notification gone arrive
+    public func onGoneCSN(contactJID: JID) {
+        self.title =  self.recieveUserRoster.name
     }
     
     /*

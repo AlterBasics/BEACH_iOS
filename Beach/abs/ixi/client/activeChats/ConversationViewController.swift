@@ -3,7 +3,7 @@ import SF_swift_framework
 import UIKit
 import QuartzCore
 
-public class ConversationViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,UISearchBarDelegate,PacketCollector {
+public class ConversationViewController: UIViewController, UITableViewDelegate,ChatListener,PacketCollector, UITableViewDataSource,UISearchBarDelegate {
     
     //Variables
     @IBOutlet weak var chatsTableView: UITableView!
@@ -323,26 +323,70 @@ public class ConversationViewController: UIViewController, UITableViewDelegate, 
     
     // MARK: - Collect peacket of Message Type
     func setCollectorDelegate(){
-        SDKLoader.getMessageReceiver().addPacketCollector(packetName: "Message", collector: self)
-        SDKLoader.getMessageReceiver().addPacketCollector(packetName: "AckPacket", collector: self)
         Platform.getInstance().getPresenceManager().addPacketCollector(packetName:"Presence", collector: self)
     }
     
     public func collect(packet: Packet) {
-        if packet.isKind(of: Message.self){
-            self.getChatData()
-        }
-        else if packet.isKind(of: Presence.self){
+         if packet.isKind(of: Presence.self){
             self.getPresenceData()
         }
-        else if packet.isKind(of: AckPacket.self){
-            self.getChatData()
-        }
+        
     }
     
     public func collect(packets: [Packet]) {
-        self.getChatData()
+        
         self.getPresenceData()
+    }
+    
+    
+    
+    //MARK:- ChatListner Events
+    //event when a message arrived
+    public func onChatLine(packet: Message) {
+            self.getChatData()
+      
+    }
+    
+    //event when a Ack arrived
+    public func onServerAck(messageIds:[String:[String]]) {
+        self.getChatData()
+    }
+    
+    //event when a Meassage Recieved Receipt arrived
+    public func onCMDeliveryReceipt(messageId: String, contactJID: JID) {
+        
+    }
+    //event when a Meassage Acknowldgement Receipt arrived
+    public func onCMAcknowledgeReceipt(messageId: String, contactJID: JID) {
+        
+    }
+    //event when a Meassage Displayed Receipt arrived
+    public func onCMDisplayedReceipt(messageId: String, contactJID: JID) {
+        
+    }
+    
+    //event when Chat state notification Active arrive
+    public func onActiveCSN(contactJID: JID) {
+        
+    }
+    //event when Chat state notification Composing arrive
+    public func onComposingCSN(contactJID: JID) {
+        
+    }
+    
+    //event when Chat state notification pause arrive
+    public func onPausedCSN(contactJID: JID) {
+        
+    }
+    
+    //event when Chat state notification inactive arrive
+    public func onInactiveCSN(contactJID: JID) {
+        
+    }
+    
+    //event when Chat state notification gone arrive
+    public func onGoneCSN(contactJID: JID) {
+        
     }
     
     /*

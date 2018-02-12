@@ -11,9 +11,6 @@
 		6A3D45D41DA867E3432A25EC /* Pods_BeachTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E03C1509DFF1E8DD33143A2D /* Pods_BeachTests.framework */; };
 		740D33F51FFD1D5F0001D2DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 740D33F11FFD1D5F0001D2DC /* Main.storyboard */; };
 		740D33F61FFD1D5F0001D2DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 740D33F31FFD1D5F0001D2DC /* LaunchScreen.storyboard */; };
-		742500582000CA30000D08F1 /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 742500572000CA30000D08F1 /* SF_swift_framework.framework */; };
-		742500592000CA38000D08F1 /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 742500572000CA30000D08F1 /* SF_swift_framework.framework */; };
-		7425005A2000CA38000D08F1 /* SF_swift_framework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 742500572000CA30000D08F1 /* SF_swift_framework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7495677F1FF530A60024CECB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7495677E1FF530A60024CECB /* AppDelegate.swift */; };
 		749567891FF530A60024CECB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 749567881FF530A60024CECB /* Assets.xcassets */; };
 		749567971FF530A70024CECB /* BeachTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567961FF530A70024CECB /* BeachTests.swift */; };
@@ -41,6 +38,9 @@
 		749567ED1FF531530024CECB /* UserChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567D11FF531530024CECB /* UserChatViewController.swift */; };
 		749567EE1FF531530024CECB /* ChatterUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567D31FF531530024CECB /* ChatterUtil.swift */; };
 		749567EF1FF531530024CECB /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567D41FF531530024CECB /* KeyChain.swift */; };
+		74AF31A62031688500673A5A /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74AF31A52031688500673A5A /* SF_swift_framework.framework */; };
+		74AF31A72031689600673A5A /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74AF31A52031688500673A5A /* SF_swift_framework.framework */; };
+		74AF31A82031689600673A5A /* SF_swift_framework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74AF31A52031688500673A5A /* SF_swift_framework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		74EE1E531FF79AD40025DF49 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 74EE1E521FF79AD40025DF49 /* GoogleService-Info.plist */; };
 		9223ADA9402700FB45223B4C /* Pods_BeachUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55724E0643FAAA240A1128F9 /* Pods_BeachUITests.framework */; };
 /* End PBXBuildFile section */
@@ -69,7 +69,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				7425005A2000CA38000D08F1 /* SF_swift_framework.framework in Embed Frameworks */,
+				74AF31A82031689600673A5A /* SF_swift_framework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,7 +83,6 @@
 		55724E0643FAAA240A1128F9 /* Pods_BeachUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeachUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		740D33F21FFD1D5F0001D2DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Main.storyboard; sourceTree = "<group>"; };
 		740D33F41FFD1D5F0001D2DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		742500572000CA30000D08F1 /* SF_swift_framework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SF_swift_framework.framework; sourceTree = "<group>"; };
 		7495677B1FF530A60024CECB /* Beach.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beach.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7495677E1FF530A60024CECB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		749567881FF530A60024CECB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -119,6 +118,7 @@
 		749567D31FF531530024CECB /* ChatterUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatterUtil.swift; sourceTree = "<group>"; };
 		749567D41FF531530024CECB /* KeyChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyChain.swift; sourceTree = "<group>"; };
 		749567D61FF531530024CECB /* Beach-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Beach-Bridging-Header.h"; sourceTree = "<group>"; };
+		74AF31A52031688500673A5A /* SF_swift_framework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SF_swift_framework.framework; sourceTree = "<group>"; };
 		74EE1E521FF79AD40025DF49 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		95D9945D4EC28AD9D75F8C35 /* Pods-BeachTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeachTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeachTests/Pods-BeachTests.release.xcconfig"; sourceTree = "<group>"; };
 		D8BB8E014550E01522ED4826 /* Pods-BeachUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeachUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeachUITests/Pods-BeachUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -132,8 +132,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				742500582000CA30000D08F1 /* SF_swift_framework.framework in Frameworks */,
-				742500592000CA38000D08F1 /* SF_swift_framework.framework in Frameworks */,
+				74AF31A62031688500673A5A /* SF_swift_framework.framework in Frameworks */,
+				74AF31A72031689600673A5A /* SF_swift_framework.framework in Frameworks */,
 				67BFD311B87978C3DBCED70F /* Pods_Beach.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -182,7 +182,7 @@
 		7495677D1FF530A60024CECB /* Beach */ = {
 			isa = PBXGroup;
 			children = (
-				742500572000CA30000D08F1 /* SF_swift_framework.framework */,
+				74AF31A52031688500673A5A /* SF_swift_framework.framework */,
 				749567B81FF531530024CECB /* abs */,
 				749567B01FF531530024CECB /* Assets.xcassets */,
 				749567B11FF531530024CECB /* Base.lproj */,
