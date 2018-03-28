@@ -34,6 +34,7 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     var message:[ChatStore] = []
     var isRefresh = false
     var cSNStatus = false
+    
     @IBAction func userDetaisAction(_ sender: Any) {
         let groupViewController = self.storyboard?.instantiateViewController(withIdentifier: "GroupDetailViewController") as? GroupDetailViewController
         groupViewController?.recieveUser =  self.recieveUser
@@ -230,9 +231,9 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        self.message = (message).sorted(by: { $0.create_time < $1.create_time})
-        if message.count > 50 && !isRefresh {
-            return 50
+//        self.message = (message).sorted(by: { $0.create_time > $1.create_time})
+        if message.count > 500 && !isRefresh {
+            return 500
         }
         return message.count + 1
     }
@@ -309,8 +310,15 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
             }, failure: { (String) in
                 
             })
+            print("message" )
             DispatchQueue.main.async {
-                self.message = chats
+                self.message = chats.sorted(by: { (chat1, chat2) -> Bool in
+                    return chat1.create_time < chat2.create_time
+                })
+                let count = self.message.count
+                if count > 200{
+                self.message = Array(self.message[count-150 ..< count])
+                }
                 self.messagingChatTableView.reloadData()
                 if !self.ack {
                     self.updateTableContentInset()

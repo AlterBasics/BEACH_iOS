@@ -180,8 +180,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // If swizzling is disabled then this function must be implemented so that the APNs token can be paired to
     // the FCM registration token.
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("APNs token retrieved: \(deviceToken)")
         
+        Messaging.messaging()
+            .setAPNSToken(deviceToken, type: MessagingAPNSTokenType.unknown)
+        print("APNs token retrieved: \(deviceToken)")
         let  token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         print(token)
         // With swizzling disabled you must set the APNs token here.
@@ -390,9 +392,15 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         if let messageID = userInfo[gcmMessageIDKey] {
             print("Message ID: \(messageID)")
         }
+      
         
         // Print full message.
         print(userInfo)
+        if (String(describing: userInfo["SF_NOTIFICATION_CODE"]) == "1001"){
+            _ = ConnectionManager.getInstance().reconnectAsync()
+            NotificationReciever.getInstance().collectNotificationData(userInfo: userInfo)
+            completionHandler([])
+        }
         if presentViewController != nil && presentViewController.isKind(of: UserChatViewController.self) && userInfo["from_jid"] != nil && userInfo["from_jid"] as! String == (presentViewController as! UserChatViewController).getJid() && (UIApplication.shared.applicationState != UIApplicationState.background) {
             completionHandler([])
         }
@@ -407,7 +415,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-        let userInfo = response.notification.request.content.userInfo
+        var userInfo = response.notification.request.content.userInfo
         _ = response.notification.request.content
         // Print message ID.
         if let messageID = userInfo[gcmMessageIDKey] {
@@ -416,6 +424,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         
         // Print full message.
         print(userInfo)
+       
         let _:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let tabbar:UITabBarController = self.window?.rootViewController as! UITabBarController
         tabbar.selectedIndex = 0
