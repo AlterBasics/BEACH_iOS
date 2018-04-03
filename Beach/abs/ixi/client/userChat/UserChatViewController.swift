@@ -62,11 +62,11 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     @IBAction func attachButtonAction(_ sender: Any) {
         
         let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .actionSheet)
-        let deleteAction = UIAlertAction(title: "Camera", style: .default, handler: {
+        let cameraAction = UIAlertAction(title: "Camera", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
             self.openCamera()
         })
-        let saveAction = UIAlertAction(title: "Gallary", style: .default, handler: {
+        let gallaryAction = UIAlertAction(title: "Gallary", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
             self.openGallary()
         })
@@ -74,8 +74,8 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
             (alert: UIAlertAction!) -> Void in
             print("Cancelled")
         })
-        optionMenu.addAction(deleteAction)
-        optionMenu.addAction(saveAction)
+        optionMenu.addAction(cameraAction)
+        optionMenu.addAction(gallaryAction)
         optionMenu.addAction(cancelAction)
         self.present(optionMenu, animated: true, completion: nil)
     }
@@ -101,7 +101,7 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         }
         
         let messageId = UUID().uuidString
-        if cSNStatus == false{
+        if cSNStatus == false && !recieveUserRoster.is_group{
             Platform.getInstance().getChatManager().sendMarkableMessageWithCSN(messageId: messageId, text: self.textView.text, to: recieveUser, isGroup: recieveUserRoster.is_group, success: { (str) in
                 self.ack = false
                 self.cSNStatus = true

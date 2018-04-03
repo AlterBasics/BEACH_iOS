@@ -211,7 +211,7 @@ public class ChatterUtil {
     // MARK:- Send Notification Token to Server
     public static func sendNotificationKey(pushNotificationService:PushNotificationService){
         if UserDefaults.standard.object(forKey: "NOTIFICATIONTOKEN") != nil {
-            _ = Platform.getInstance().getUserManager().updateDeviceToken(token: UserDefaults.standard.object(forKey: "NOTIFICATIONTOKEN") as! String, notificationService: pushNotificationService)
+            _ = Platform.getInstance().getUserManager().updateDeviceToken(token: UserDefaults.standard.object(forKey: "NOTIFICATIONTOKEN") as! String, notificationService: pushNotificationService, deviceType:DeviceType.IOS )
         }
     }
     
