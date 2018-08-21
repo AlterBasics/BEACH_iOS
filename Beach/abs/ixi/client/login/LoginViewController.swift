@@ -12,7 +12,7 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
     
     @IBAction func loginButtonAction(_ sender: Any) {
         loginBtn.isEnabled = false
-       Constants.appDelegate.addActivitiIndicaterView()
+        Constants.appDelegate.addActivitiIndicaterView()
         self.login()
     }
     
@@ -22,13 +22,13 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
         ChatterUtil.setCirculerView(view: usernameTextField, radis: Float(2), borderColor: UIColor.black, borderWidth: Float(1))
         ChatterUtil.setCirculerView(view: password, radis: Float(2), borderColor: UIColor.black, borderWidth: Float(1))
         errorLabel.isHidden = true
-       self.addKeyBoardObserver()
+        self.addKeyBoardObserver()
         usernameTextField.delegate = self
         password.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
-         SDKLoader.shutdownSDK()
+        SDKLoader.shutdownSDK()
     }
     
     
@@ -40,7 +40,7 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
     
     func login(){
         do{
-           
+            
             SDKLoader.loadSDK(server: "188.166.251.121", port: 5222)
             try Platform.getInstance().getUserManager().login(userName: usernameTextField.text!, password: password.text!,  domain:"alterbasics.com", success: { (String) in
                 do {
@@ -59,8 +59,8 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
                     Constants.appDelegate.hideActivitiIndicaterView()
                     let storyBoard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
                     let vc = (storyBoard.instantiateViewController(withIdentifier: "ChatterTabBarController") as? ChatterTabBarController)!
-                    self.present(vc, animated: true, completion: nil)
-                  
+                    Constants.appDelegate.window!.rootViewController = vc
+                    
                 }
             }, failure: { (str) in
                 DispatchQueue.main.async {
@@ -109,6 +109,6 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
         self.view.endEditing(true)
         return false
     }
-   
+    
 }
 

@@ -26,6 +26,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         SDKLoader.loadSDK(server: "188.166.251.121", port: 5222)
         //NEtwork reachability
         _ = ReachabilityManager.sharedManager
+        self.getRootViewController()
+
         ChatterUtil.setNavigationBar()
         
         //Configure Firebase
@@ -42,8 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // [END register_for_notifications]
         
-        self.getRootViewController()
-        return true
+                return true
     }
     
     
@@ -57,16 +58,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
-            
-            if !users.isEmpty && users[0].login {
-                ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: true)
-                Platform.getInstance().getUserManager().signalNegotiationQueue()
-                _  = ConnectionManager.getInstance().reconnectAsync()
-            }
-        },failure: { (String) in
-            print(String)
-        })
+//        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
+//            
+//            if !users.isEmpty && users[0].login {
+//                ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: true)
+//                Platform.getInstance().getUserManager().signalNegotiationQueue()
+//                _  = ConnectionManager.getInstance().reconnectAsync()
+//            }
+//        },failure: { (String) in
+//            print(String)
+//        })
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
     
@@ -100,7 +101,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //                self.connectedToGCM = true
         //                print("Connected to GCM")
         //                // [START_EXCLUDE]
-        //                self.subscribeToTopic()
+        //                self.scribeToTopic()
         //                // [END_EXCLUDE]
         //            }
         //        })
@@ -111,15 +112,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // [START disconnect_gcm_service]
     func applicationDidEnterBackground(_ application: UIApplication) {
-        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
-            
-            if !users.isEmpty && users[0].login {
-                ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: false)
-                Platform.getInstance().getUserManager().closeStream()
-            }
-        },failure: { (String) in
-            print(String)
-        })
+//        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
+//
+//            if !users.isEmpty && users[0].login {
+//                ConnectionManager.getInstance().setNetworkConnectivity(networkConnectivity: false)
+//                Platform.getInstance().getUserManager().closeStream()
+//            }
+//        },failure: { (String) in
+//            print(String)
+//        })
         
         //        GCMService.sharedInstance().disconnect()
         // [START_EXCLUDE]
@@ -250,7 +251,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     ///MARK:  Get Root ViewController Of App
     func getRootViewController(){
-        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
+        SFCoreDataManager.sharedInstance.getDataFromDataBase(entityName: "SFUserDetail",jid:"", success: { (users:[SFUserDetail]) in
             
             if !users.isEmpty && users[0].login {
                 do{
@@ -442,7 +443,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
 extension AppDelegate : MessagingDelegate {
     
     // [START refresh_token]
-    func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         print("Firebase registration token: \(fcmToken)")
     }
     // [END refresh_token]

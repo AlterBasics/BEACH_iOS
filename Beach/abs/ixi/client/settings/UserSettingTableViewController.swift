@@ -1,6 +1,6 @@
 import SF_swift_framework
 import UIKit
-
+import Firebase
 public
 
 class UserSettingTableViewController: UITableViewController {
@@ -56,15 +56,19 @@ class UserSettingTableViewController: UITableViewController {
     override public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
         if indexPath.row == 1 {
             UIApplication.shared.unregisterForRemoteNotifications()
+//            Messaging.messaging().dele
             let storyBoard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
             let vc = (storyBoard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController)!
+            InstanceID.instanceID().deleteID { (error) in
+                print(error)
+            }
             Constants.appDelegate.window!.rootViewController = vc
         }
     }
     
     //MARK:- Get Data from Database
     func getData(){
-        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "SFUserDetail", jid: "", success: { (users:[SFUserDetail]) in
+        SFCoreDataManager.sharedInstance.getDataFromDataBase(entityName: "SFUserDetail",jid: "", success: { (users:[SFUserDetail]) in
             if !users.isEmpty {
                 do {
                     try self.userName = JID(jid: users[0].userJid)

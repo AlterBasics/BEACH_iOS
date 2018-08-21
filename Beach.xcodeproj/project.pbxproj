@@ -38,9 +38,6 @@
 		749567ED1FF531530024CECB /* UserChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567D11FF531530024CECB /* UserChatViewController.swift */; };
 		749567EE1FF531530024CECB /* ChatterUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567D31FF531530024CECB /* ChatterUtil.swift */; };
 		749567EF1FF531530024CECB /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567D41FF531530024CECB /* KeyChain.swift */; };
-		74B9C8D6206BA3640037F568 /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9C8D5206BA3640037F568 /* SF_swift_framework.framework */; };
-		74B9C8D7206BA36B0037F568 /* SF_swift_framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9C8D5206BA3640037F568 /* SF_swift_framework.framework */; };
-		74B9C8D8206BA36B0037F568 /* SF_swift_framework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9C8D5206BA3640037F568 /* SF_swift_framework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		74EE1E531FF79AD40025DF49 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 74EE1E521FF79AD40025DF49 /* GoogleService-Info.plist */; };
 		9223ADA9402700FB45223B4C /* Pods_BeachUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55724E0643FAAA240A1128F9 /* Pods_BeachUITests.framework */; };
 /* End PBXBuildFile section */
@@ -69,7 +66,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				74B9C8D8206BA36B0037F568 /* SF_swift_framework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,7 +114,6 @@
 		749567D31FF531530024CECB /* ChatterUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatterUtil.swift; sourceTree = "<group>"; };
 		749567D41FF531530024CECB /* KeyChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyChain.swift; sourceTree = "<group>"; };
 		749567D61FF531530024CECB /* Beach-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Beach-Bridging-Header.h"; sourceTree = "<group>"; };
-		74B9C8D5206BA3640037F568 /* SF_swift_framework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SF_swift_framework.framework; sourceTree = "<group>"; };
 		74EE1E521FF79AD40025DF49 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		95D9945D4EC28AD9D75F8C35 /* Pods-BeachTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeachTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeachTests/Pods-BeachTests.release.xcconfig"; sourceTree = "<group>"; };
 		D8BB8E014550E01522ED4826 /* Pods-BeachUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeachUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeachUITests/Pods-BeachUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -132,8 +127,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74B9C8D6206BA3640037F568 /* SF_swift_framework.framework in Frameworks */,
-				74B9C8D7206BA36B0037F568 /* SF_swift_framework.framework in Frameworks */,
 				67BFD311B87978C3DBCED70F /* Pods_Beach.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -227,7 +220,6 @@
 		749567B81FF531530024CECB /* abs */ = {
 			isa = PBXGroup;
 			children = (
-				74B9C8D5206BA3640037F568 /* SF_swift_framework.framework */,
 				749567B91FF531530024CECB /* ixi */,
 			);
 			path = abs;
@@ -532,17 +524,17 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Beach/Pods-Beach-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+				"${PODS_ROOT}/StringflowFramework-iOS/SF_swift_framework.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SF_swift_framework.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

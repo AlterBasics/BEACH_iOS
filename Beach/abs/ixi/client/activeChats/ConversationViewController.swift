@@ -28,6 +28,7 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
     }
     
     public override func viewWillAppear(_ animated: Bool) {
+        SDKLoader.getMessageReceiver().addChatListener(chatListener: self)
         DispatchQueue.main.async {
             self.chatsSearchBar.isHidden = true
             self.getPresenceData()
@@ -36,7 +37,7 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
-        
+        SDKLoader.getMessageReceiver().removeChatListener(chatListener: self)
     }
     
     override public func didReceiveMemoryWarning() {
@@ -268,18 +269,14 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
     
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         self.activeSearch = false;
-        
         self.chatsSearchBar.resignFirstResponder()
     }
     
     public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
-        if( searchText.characters.isEmpty){
+        if( searchText.isEmpty){
             self.activeSearch = false;
             self.chatsSearchBar.isSearchResultsButtonSelected = false
             self.chatsSearchBar.resignFirstResponder()
-            
-            
         } else {
             self.activeSearch = true;
             self.searchArray = self.userName.filter({ (user) -> Bool in
@@ -289,31 +286,26 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
                 return range.location != NSNotFound
             })
         }
-        
         self.chatsTableView.reloadData()
-        
     }
     
     //MARK:- Navigate to user chat from Notification Click
     func navigateToUserChat(userJid:String) {
         do {
             let userChatViewController = self.storyboard?.instantiateViewController(withIdentifier: "UserChatViewController") as? UserChatViewController
-            
             userChatViewController?.recieveUser =  try JID(jid: userJid )
-            
             self.navigationController?.pushViewController(userChatViewController!, animated: true)
         }
         catch {
             
         }
-        
     }
+    
     //MARK:- Refresh View
     @objc func refresh(_ sender: Any) {
         // Code to refresh table view
         if self.chatsSearchBar.isHidden == false{
             self.chatsSearchBar.isHidden = true
-            
         }else {
             self.chatsSearchBar.isHidden = false
         }
@@ -330,11 +322,9 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
          if packet.isKind(of: Presence.self){
             self.getPresenceData()
         }
-        
     }
     
     public func collect(packets: [Packet]) {
-        
         self.getPresenceData()
     }
     
@@ -344,12 +334,11 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
     //event when a message arrived
     public func onChatLine(packet: Message) {
             self.getChatData()
-      
     }
     
     //event when a Ack arrived
     public func onServerAck(messageIds:[String:[String]]) {
-        self.getChatData()
+        
     }
     
     //event when a Meassage Recieved Receipt arrived
@@ -389,14 +378,5 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
         
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
 }

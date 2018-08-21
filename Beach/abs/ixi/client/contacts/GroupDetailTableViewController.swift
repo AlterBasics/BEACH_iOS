@@ -171,7 +171,7 @@ class GroupDetailViewController: UIViewController, UITableViewDelegate, UITableV
     
     public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        if( searchText.characters.isEmpty){
+        if( searchText.isEmpty){
             self.activeSearch = false;
             self.contactsSearchBar.isSearchResultsButtonSelected = false
             self.contactsSearchBar.resignFirstResponder()
