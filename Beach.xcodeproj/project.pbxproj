@@ -15,7 +15,6 @@
 		749567891FF530A60024CECB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 749567881FF530A60024CECB /* Assets.xcassets */; };
 		749567971FF530A70024CECB /* BeachTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567961FF530A70024CECB /* BeachTests.swift */; };
 		749567A21FF530A70024CECB /* BeachUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567A11FF530A70024CECB /* BeachUITests.swift */; };
-		749567D71FF531530024CECB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 749567B01FF531530024CECB /* Assets.xcassets */; };
 		749567DA1FF531530024CECB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567B61FF531530024CECB /* Constants.swift */; };
 		749567DB1FF531530024CECB /* ReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567B71FF531530024CECB /* ReachabilityManager.swift */; };
 		749567DC1FF531530024CECB /* ChatsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567BC1FF531530024CECB /* ChatsTableViewCell.swift */; };
@@ -38,6 +37,7 @@
 		749567ED1FF531530024CECB /* UserChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567D11FF531530024CECB /* UserChatViewController.swift */; };
 		749567EE1FF531530024CECB /* ChatterUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567D31FF531530024CECB /* ChatterUtil.swift */; };
 		749567EF1FF531530024CECB /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749567D41FF531530024CECB /* KeyChain.swift */; };
+		74D9158C212D704E00EABBFC /* CreateGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D9158B212D704E00EABBFC /* CreateGroupViewController.swift */; };
 		74EE1E531FF79AD40025DF49 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 74EE1E521FF79AD40025DF49 /* GoogleService-Info.plist */; };
 		9223ADA9402700FB45223B4C /* Pods_BeachUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55724E0643FAAA240A1128F9 /* Pods_BeachUITests.framework */; };
 /* End PBXBuildFile section */
@@ -114,6 +114,7 @@
 		749567D31FF531530024CECB /* ChatterUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatterUtil.swift; sourceTree = "<group>"; };
 		749567D41FF531530024CECB /* KeyChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyChain.swift; sourceTree = "<group>"; };
 		749567D61FF531530024CECB /* Beach-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Beach-Bridging-Header.h"; sourceTree = "<group>"; };
+		74D9158B212D704E00EABBFC /* CreateGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupViewController.swift; sourceTree = "<group>"; };
 		74EE1E521FF79AD40025DF49 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		95D9945D4EC28AD9D75F8C35 /* Pods-BeachTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeachTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeachTests/Pods-BeachTests.release.xcconfig"; sourceTree = "<group>"; };
 		D8BB8E014550E01522ED4826 /* Pods-BeachUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeachUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeachUITests/Pods-BeachUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -263,6 +264,7 @@
 				749567C11FF531530024CECB /* ContactsTableViewCell.swift */,
 				749567C21FF531530024CECB /* ContactsViewController.swift */,
 				749567C31FF531530024CECB /* GroupDetailTableViewController.swift */,
+				74D9158B212D704E00EABBFC /* CreateGroupViewController.swift */,
 			);
 			path = contacts;
 			sourceTree = "<group>";
@@ -404,7 +406,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0900;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = AlterBasics;
 				TargetAttributes = {
 					7495677A1FF530A60024CECB = {
@@ -463,7 +465,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				749567891FF530A60024CECB /* Assets.xcassets in Resources */,
-				749567D71FF531530024CECB /* Assets.xcassets in Resources */,
 				74EE1E531FF79AD40025DF49 /* GoogleService-Info.plist in Resources */,
 				740D33F61FFD1D5F0001D2DC /* LaunchScreen.storyboard in Resources */,
 				740D33F51FFD1D5F0001D2DC /* Main.storyboard in Resources */,
@@ -649,6 +650,7 @@
 			files = (
 				749567E01FF531530024CECB /* ContactsTableViewCell.swift in Sources */,
 				7495677F1FF530A60024CECB /* AppDelegate.swift in Sources */,
+				74D9158C212D704E00EABBFC /* CreateGroupViewController.swift in Sources */,
 				749567DC1FF531530024CECB /* ChatsTableViewCell.swift in Sources */,
 				749567DD1FF531530024CECB /* ConversationViewController.swift in Sources */,
 				749567EC1FF531530024CECB /* SendTextTableViewCell.swift in Sources */,
@@ -738,6 +740,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -745,6 +748,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -795,6 +799,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -802,6 +807,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

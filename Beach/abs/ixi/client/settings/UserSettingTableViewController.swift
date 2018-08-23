@@ -60,7 +60,7 @@ class UserSettingTableViewController: UITableViewController {
             let storyBoard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
             let vc = (storyBoard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController)!
             InstanceID.instanceID().deleteID { (error) in
-                print(error)
+                print(error ?? "")
             }
             Constants.appDelegate.window!.rootViewController = vc
         }
