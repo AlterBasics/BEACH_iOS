@@ -3,11 +3,12 @@ import UIKit
 
 //:- Cell for presenting Rosters Data
 class ContactsTableViewCell: UITableViewCell {
-    
     //MARK:- Outlet variable
+    @IBOutlet weak var userType: UILabel!
     @IBOutlet weak var userImageImageView: UIImageView!
     @IBOutlet weak var userNameUILabel: UILabel!
     @IBOutlet weak var userSelectedImageView: UIImageView!
+    @IBOutlet weak var deleteBtn: UIButton!
     
     //MARK:-Delegate Method
     override func awakeFromNib() {
@@ -21,7 +22,5 @@ class ContactsTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
     }
-    
-    
     
 }

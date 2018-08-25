@@ -8,6 +8,7 @@
 
 import UIKit
 import SF_swift_framework
+
 class CreateGroupViewController: UIViewController {
     
     @IBOutlet weak var selectedMembersLbl: UILabel!
@@ -28,7 +29,9 @@ class CreateGroupViewController: UIViewController {
         groupSubjectLbl.delegate = self
         searchBar.delegate = self
         self.title = "Create Group"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(self.createGroup))
+        let barButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(self.createGroup))
+        barButton.tintColor = .white
+        self.navigationItem.rightBarButtonItem = barButton
     }
     
     override func didReceiveMemoryWarning() {
@@ -105,6 +108,10 @@ class CreateGroupViewController: UIViewController {
     }
     
 }
+
+
+
+
 
 extension CreateGroupViewController :UITableViewDelegate,UITableViewDataSource{
     
@@ -196,13 +203,15 @@ extension CreateGroupViewController :UITableViewDelegate,UITableViewDataSource{
                 }
             }
         }
-        
-        
     }
 }
 
+
+
+
+// MARK: -  Search Bar Delegate Function
 extension CreateGroupViewController : UISearchBarDelegate{
-    // MARK: -  Search Bar
+    
     public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         //self.activeSearch = true;
         
@@ -242,6 +251,8 @@ extension CreateGroupViewController : UISearchBarDelegate{
 }
 
 
+
+//MARK:- Text Fields delegate function
 extension CreateGroupViewController:UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.groupSubjectLbl.endEditing(true)

@@ -56,6 +56,7 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         self.setUser()
         self.isRefresh = false
         SDKLoader.getMessageReceiver().addChatListener(chatListener: self)
+        
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -426,6 +427,18 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
                     if users[0].is_group{
                         self.userImage.image = #imageLiteral(resourceName: "group")
                         self.userDetailButton.isHidden = false
+                        self.sendButton.isUserInteractionEnabled = false
+                        self.sendButton.isHidden = true
+                        self.textView.isUserInteractionEnabled = false
+                        self.textView.text = "you are not member of group"
+                        for member in Array(users[0].members!) as! [ChatRoomMembers]{
+                            if (member.jid?.elementsEqual(self.user.getBareJID()))!{
+                                    self.sendButton.isUserInteractionEnabled = true
+                                self.sendButton.isHidden = false
+                                self.textView.isUserInteractionEnabled = true
+                                self.textView.text = "write message..."
+                                }
+                        }
                         let image = UIImage(named: "info")
                         let renderedImage = image?.withRenderingMode(.alwaysOriginal)
                         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: renderedImage, style: .plain, target: self, action: #selector(self.userDetaisAction(_:)))
