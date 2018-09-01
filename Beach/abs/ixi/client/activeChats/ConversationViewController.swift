@@ -3,8 +3,7 @@ import SF_swift_framework
 import UIKit
 import QuartzCore
 
-public class ConversationViewController: UIViewController, UITableViewDelegate,ChatListener,PacketCollector, UITableViewDataSource,UISearchBarDelegate {
-    
+public class ConversationViewController: UIViewController {
     //Variables
     @IBOutlet weak var chatsTableView: UITableView!
     @IBOutlet var chatsSearchBar: UISearchBar!
@@ -29,6 +28,7 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
     
     public override func viewWillAppear(_ animated: Bool) {
         SDKLoader.getMessageReceiver().addChatListener(chatListener: self)
+        self.addHandlers()
         DispatchQueue.main.async {
             self.chatsSearchBar.isHidden = true
             self.getPresenceData()
@@ -38,6 +38,7 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
     
     public override func viewWillDisappear(_ animated: Bool) {
         SDKLoader.getMessageReceiver().removeChatListener(chatListener: self)
+        self.removeHandlers()
     }
     
     override public func didReceiveMemoryWarning() {
@@ -64,8 +65,105 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
         chatsTableView.dataSource = self
     }
     
-    // MARK: - tableView
-    // MARK: - Table view data source
+    //MARK:- get Data from Database
+    //Get Presence Data
+    func getPresenceData(){
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "UserPresence",jid: nil, success: { (presences:[UserPresence]) in
+            self.presence = []
+            for user in presences {
+                self.presence.append(user)
+                DispatchQueue.main.async {
+                    self.chatsTableView.reloadData()
+                }
+            }
+        }, failure: { (String) in
+            print(String)
+        })
+    }
+    
+    //Get ActiveChat Data
+    func getChatData() {
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Conversation", jid: nil, success: { (activeChats:[Conversation]) in
+            self.userName = activeChats
+            self.userName = self.userName.sorted(by: { $0.update_time > $1.update_time })
+            DispatchQueue.main.async {
+                self.chatsTableView.reloadData()
+            }
+            
+        }, failure: { (String) in
+            print(String)
+        })
+    }
+    
+    //MARK:- Check user presence is Avialable or not 
+    func checkPresence(conversationArray:Array<Conversation>,index:Int)->Bool{
+        for user in presence{
+            if user.jid?.lowercased() == conversationArray[index].peer_jid?.lowercased() {
+                if user.presence?.uppercased() == PresenceType.AVAILABLE.uppercased() {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    //MARK:- KeyBoard Hide
+    //Calls this function when the tap is recognized.
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        self.chatsSearchBar.resignFirstResponder()
+        view.endEditing(true)
+    }
+    
+    //MARK:- Navigate to user chat from Notification Click
+    func navigateToUserChat(userJid:String) {
+        do {
+            let userChatViewController = self.storyboard?.instantiateViewController(withIdentifier: "UserChatViewController") as? UserChatViewController
+            userChatViewController?.recieveUser =  try JID(jid: userJid )
+            self.navigationController?.pushViewController(userChatViewController!, animated: true)
+        }
+        catch {
+            
+        }
+    }
+    
+    //MARK:- Refresh View
+    @objc func refresh(_ sender: Any) {
+        // Code to refresh table view
+        if self.chatsSearchBar.isHidden == false{
+            self.chatsSearchBar.isHidden = true
+        }else {
+            self.chatsSearchBar.isHidden = false
+        }
+        self.chatsTableView.reloadData()
+        refreshControl.endRefreshing()
+    }
+    
+   
+  
+}
+
+extension ConversationViewController :EventHandler {
+    
+    func addHandlers(){
+        Platform.addEventHandler(type: .CHAT_ROOM_DATA_ADD, handler: self)
+    }
+    
+    func removeHandlers(){
+        Platform.removeEventHandler(type: .CHAT_ROOM_DATA_ADD, handler: self)
+    }
+    
+    public func handle(e: Event) {
+        if e.getType() == EventType.CHAT_ROOM_DATA_ADD{
+            self.getChatData()
+        }
+    }
+}
+
+// MARK: - tableView
+// MARK: - Table view data source
+extension ConversationViewController :UITableViewDelegate, UITableViewDataSource {
+    
     
     public func numberOfSections(in tableView: UITableView) -> Int {
         
@@ -196,58 +294,10 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
         
         return [ delete, mute]
     }
-    
-    //MARK:- get Data from Database
-    //Get Presence Data
-    func getPresenceData(){
-        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "UserPresence",jid: nil, success: { (presences:[UserPresence]) in
-            self.presence = []
-            for user in presences {
-                self.presence.append(user)
-                DispatchQueue.main.async {
-                    self.chatsTableView.reloadData()
-                }
-            }
-        }, failure: { (String) in
-            print(String)
-        })
-    }
-    
-    //Get ActiveChat Data
-    func getChatData() {
-        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Conversation", jid: nil, success: { (activeChats:[Conversation]) in
-            self.userName = activeChats
-            self.userName = self.userName.sorted(by: { $0.update_time > $1.update_time })
-            DispatchQueue.main.async {
-                self.chatsTableView.reloadData()
-            }
-            
-        }, failure: { (String) in
-            print(String)
-        })
-    }
-    
-    //MARK:- Check user presence is Avialable or not 
-    func checkPresence(conversationArray:Array<Conversation>,index:Int)->Bool{
-        for user in presence{
-            if user.jid?.lowercased() == conversationArray[index].peer_jid?.lowercased() {
-                if user.presence?.uppercased() == PresenceType.AVAILABLE.uppercased() {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-    
-    //MARK:- KeyBoard Hide
-    //Calls this function when the tap is recognized.
-    @objc func dismissKeyboard() {
-        //Causes the view (or one of its embedded text fields) to resign the first responder status.
-        self.chatsSearchBar.resignFirstResponder()
-        view.endEditing(true)
-    }
-    
-    // MARK: -  Search Bar
+}
+
+// MARK: -  Search Bar
+extension ConversationViewController:UISearchBarDelegate{
     public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         //        self.activeSearch = true;
         let indexPath = IndexPath(row: 0 , section: 0)
@@ -288,38 +338,17 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
         }
         self.chatsTableView.reloadData()
     }
+}
+
+// MARK: - Collect packet of presence Type
+extension ConversationViewController:PacketCollector {
     
-    //MARK:- Navigate to user chat from Notification Click
-    func navigateToUserChat(userJid:String) {
-        do {
-            let userChatViewController = self.storyboard?.instantiateViewController(withIdentifier: "UserChatViewController") as? UserChatViewController
-            userChatViewController?.recieveUser =  try JID(jid: userJid )
-            self.navigationController?.pushViewController(userChatViewController!, animated: true)
-        }
-        catch {
-            
-        }
-    }
-    
-    //MARK:- Refresh View
-    @objc func refresh(_ sender: Any) {
-        // Code to refresh table view
-        if self.chatsSearchBar.isHidden == false{
-            self.chatsSearchBar.isHidden = true
-        }else {
-            self.chatsSearchBar.isHidden = false
-        }
-        self.chatsTableView.reloadData()
-        refreshControl.endRefreshing()
-    }
-    
-    // MARK: - Collect peacket of Message Type
     func setCollectorDelegate(){
         Platform.getInstance().getPresenceManager().addPacketCollector(packetName:"Presence", collector: self)
     }
     
     public func collect(packet: Packet) {
-         if packet.isKind(of: Presence.self){
+        if packet.isKind(of: Presence.self){
             self.getPresenceData()
         }
     }
@@ -327,13 +356,13 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
     public func collect(packets: [Packet]) {
         self.getPresenceData()
     }
-    
-    
-    
-    //MARK:- ChatListner Events
+}
+
+//MARK:- ChatListner Events
+extension ConversationViewController: ChatListener {
     //event when a message arrived
     public func onChatLine(packet: Message) {
-            self.getChatData()
+        self.getChatData()
     }
     
     //event when a Ack arrived
@@ -377,6 +406,4 @@ public class ConversationViewController: UIViewController, UITableViewDelegate,C
     public func onGoneCSN(contactJID: JID) {
         
     }
-    
-    
 }

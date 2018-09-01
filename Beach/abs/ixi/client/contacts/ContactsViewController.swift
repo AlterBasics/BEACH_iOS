@@ -1,7 +1,7 @@
 import SF_swift_framework
 import UIKit
 
-public class ContactsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,UISearchBarDelegate ,PacketCollector,UISearchDisplayDelegate{
+public class ContactsViewController: UIViewController{
     //MARK:- Outlet And Variables
     @IBOutlet weak var contactsTableView: UITableView!
     @IBOutlet weak var contactsSearchBar: UISearchBar!
@@ -15,7 +15,7 @@ public class ContactsViewController: UIViewController, UITableViewDelegate, UITa
     //MARK: - Delegate Method for view controller
     override public func viewDidLoad() {
         super.viewDidLoad()
-        Platform.getInstance().getPresenceManager().addPacketCollector(packetName:"Presence", collector: self)
+        self.setCollectorDelegate()
         contactsTableView.tableFooterView = UIView(frame: .zero)
         setViewData()
         self.setRefreshControlAndTapGesture()
@@ -33,40 +33,137 @@ public class ContactsViewController: UIViewController, UITableViewDelegate, UITa
         contactsSearchBar.isHidden = true
         self.getPresenceData()
         self.getRosterData()
+        self.addHandlers()
     }
     
-    override public func viewWillDisappear(_ animated: Bool) {
-        
+    override public func viewDidDisappear(_ animated: Bool) {
+        self.removeHandlers()
     }
+
     
     func setViewData() {
         self.title = "Contacts"
     }
+
     
     
-    public func addUserDetails(name:String) {
-        //        userName.append(name)
+    func getRosterData(){
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Rosters",jid: nil, success: { (rosters:[Rosters]) in
+            let sortedArray = rosters.sorted { $0.name?.localizedCaseInsensitiveCompare($1.name!) == ComparisonResult.orderedAscending }
+            self.userName = sortedArray
+            DispatchQueue.main.async {
+                self.contactsTableView.reloadData()
+            }
+            
+        }, failure: { (String) in
+            print(String)
+        })
+    }
+    
+    func getPresenceData() {
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "UserPresence",jid: nil, success: { (presences:[UserPresence]) in
+            self.presence = presences
+            DispatchQueue.main.async {
+                self.contactsTableView.reloadData()
+            }
+        }, failure: { (String) in
+            print(String)
+        })
+    }
+    
+    //MARK:- Check user presence is Avialable or not
+    func checkPresence(conversationArray:Array<Rosters>,index:Int)->Bool{
+        for user in presence{
+            if user.jid?.lowercased() == conversationArray[index].jid?.lowercased() {
+                if user.presence?.uppercased() == PresenceType.AVAILABLE.uppercased() {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    //MARK:- KeyBoard Hide
+    //Calls this function when the tap is recognized.
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        self.contactsSearchBar.resignFirstResponder()
+        view.endEditing(true)
+    }
+    
+    //MARK:-  UIRefreshControl
+    //Adding refresh
+    public func setRefreshControlAndTapGesture(){
+        let refresh = UIRefreshControl()
+        self.refreshControl = refresh;
+        self.contactsTableView.addSubview(self.refreshControl)
+        self.refreshControl.addTarget(self, action: #selector(self.refresh), for: UIControlEvents.valueChanged)
+        
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    // Refresh Action
+    @objc func refresh(_ sender: Any) {
+        // Code to refresh table view
+        refreshControl.endRefreshing()
+        if self.contactsSearchBar.isHidden == false{
+            self.contactsSearchBar.isHidden = true
+            self.contactsTableView.reloadData() 
+        }else {
+            self.contactsSearchBar.isHidden = false
+            self.contactsTableView.reloadData()
+        }
+        
+    }
+    
+}
+
+// MARK: -  Search Bar
+extension ContactsViewController : UISearchBarDelegate ,UISearchDisplayDelegate{
+    public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        //self.activeSearch = true;
+        
+    }
+    
+    public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        
+    }
+    
+    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.activeSearch = false;
+        self.contactsSearchBar.resignFirstResponder()
+    }
+    
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.activeSearch = false;
+        self.contactsSearchBar.resignFirstResponder()
+    }
+    
+    
+    
+    public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if( searchText.isEmpty){
+            self.activeSearch = false;
+            self.contactsSearchBar.isSearchResultsButtonSelected = false
+            self.contactsSearchBar.resignFirstResponder()
+        } else {
+            self.activeSearch = true;
+            self.searchArray = self.userName.filter({ (user) -> Bool in
+                let tmp: NSString = user.name! as NSString
+                let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
+                return range.location != NSNotFound
+            })
+        }
         self.contactsTableView.reloadData()
     }
     
-    
-    
-    //MARK:- Packet Collector Delegate Method
-    public func collect(packet: Packet) {
-        if packet.isKind(of: Presence.self){
-            self.getPresenceData()
-        }
-        else if packet.isKind(of: Roster.self) {
-            self.getRosterData()
-        }
-    }
-    
-    public func collect(packets: [Packet]) {
-        self.getPresenceData()
-        self.getRosterData()
-    }
-    
-    // MARK: - Table view data source
+}
+
+// MARK: - Table view data source
+extension ContactsViewController: UITableViewDelegate, UITableViewDataSource{
     public func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -177,117 +274,53 @@ public class ContactsViewController: UIViewController, UITableViewDelegate, UITa
         return [ delete, mute]
     }
     
+}
+
+extension ContactsViewController :EventHandler {
     
-    func getRosterData(){
-        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Rosters",jid: nil, success: { (rosters:[Rosters]) in
-            let sortedArray = rosters.sorted { $0.name?.localizedCaseInsensitiveCompare($1.name!) == ComparisonResult.orderedAscending }
-            self.userName = sortedArray
-            DispatchQueue.main.async {
-                self.contactsTableView.reloadData()
-            }
-            
-        }, failure: { (String) in
-            print(String)
-        })
+    func addHandlers(){
+        Platform.addEventHandler(type: .ROSTER_DATA_ADD, handler: self)
+         Platform.addEventHandler(type: .CHAT_ROOM_DATA_ADD, handler: self)
+        Platform.addEventHandler(type: .DATA_DELETE, handler: self)
     }
     
-    func getPresenceData() {
-        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "UserPresence",jid: nil, success: { (presences:[UserPresence]) in
-            self.presence = presences
-            DispatchQueue.main.async {
-                self.contactsTableView.reloadData()
-            }
-        }, failure: { (String) in
-            print(String)
-        })
+    func removeHandlers(){
+        Platform.removeEventHandler(type: .ROSTER_DATA_ADD, handler: self)
+        Platform.removeEventHandler(type: .CHAT_ROOM_DATA_ADD, handler: self)
+        Platform.removeEventHandler(type: .DATA_DELETE, handler: self)
     }
     
-    //MARK:- Check user presence is Avialable or not
-    func checkPresence(conversationArray:Array<Rosters>,index:Int)->Bool{
-        for user in presence{
-            if user.jid?.lowercased() == conversationArray[index].jid?.lowercased() {
-                if user.presence?.uppercased() == PresenceType.AVAILABLE.uppercased() {
-                    return true
-                }
-            }
+    public func handle(e: Event) {
+        if e.getType() == EventType.CHAT_ROOM_DATA_ADD{
+            self.getRosterData()
         }
-        return false
-    }
-    
-    //MARK:- KeyBoard Hide
-    //Calls this function when the tap is recognized.
-    @objc func dismissKeyboard() {
-        //Causes the view (or one of its embedded text fields) to resign the first responder status.
-        self.contactsSearchBar.resignFirstResponder()
-        view.endEditing(true)
-    }
-    
-    
-    // MARK: -  Search Bar
-    public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        //self.activeSearch = true;
-        
-    }
-    
-    public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        
-    }
-    
-    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        self.activeSearch = false;
-        self.contactsSearchBar.resignFirstResponder()
-    }
-    
-    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        self.activeSearch = false;
-        self.contactsSearchBar.resignFirstResponder()
-    }
-    
-    
-    
-    public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
-        if( searchText.isEmpty){
-            self.activeSearch = false;
-            self.contactsSearchBar.isSearchResultsButtonSelected = false
-            self.contactsSearchBar.resignFirstResponder()
-        } else {
-            self.activeSearch = true;
-            self.searchArray = self.userName.filter({ (user) -> Bool in
-                let tmp: NSString = user.name! as NSString
-                let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
-                return range.location != NSNotFound
-            })
+        if e.getType() == EventType.ROSTER_DATA_ADD{
+            self.getRosterData()
         }
-        self.contactsTableView.reloadData()
-    }
-    
-    
-    //MARK:-  UIRefreshControl
-    //Adding refresh
-    public func setRefreshControlAndTapGesture(){
-        let refresh = UIRefreshControl()
-        self.refreshControl = refresh;
-        self.contactsTableView.addSubview(self.refreshControl)
-        self.refreshControl.addTarget(self, action: #selector(self.refresh), for: UIControlEvents.valueChanged)
-        
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-    }
-    
-    // Refresh Action
-    @objc func refresh(_ sender: Any) {
-        // Code to refresh table view
-        refreshControl.endRefreshing()
-        if self.contactsSearchBar.isHidden == false{
-            self.contactsSearchBar.isHidden = true
-            self.contactsTableView.reloadData() 
-        }else {
-            self.contactsSearchBar.isHidden = false
-            self.contactsTableView.reloadData()
+        if e.getType() == EventType.DATA_DELETE{
+            self.getRosterData()
         }
-        
+    }
+}
+
+//MARK:- Packet Collector Delegate Method
+extension ContactsViewController:PacketCollector{
+    
+    func setCollectorDelegate(){
+        Platform.getInstance().getPresenceManager().addPacketCollector(packetName:"Presence", collector: self)
     }
     
+    public func collect(packet: Packet) {
+        if packet.isKind(of: Presence.self){
+            self.getPresenceData()
+        }
+        else if packet.isKind(of: Roster.self) {
+            self.getRosterData()
+        }
+    }
+    
+    public func collect(packets: [Packet]) {
+        self.getPresenceData()
+        self.getRosterData()
+    }
 }

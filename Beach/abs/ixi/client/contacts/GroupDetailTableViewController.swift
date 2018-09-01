@@ -4,7 +4,7 @@ import UIKit
 import SF_swift_framework
 
 //: - View Controller to show group detail
-class GroupDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,UISearchBarDelegate,UISearchDisplayDelegate {
+class GroupDetailViewController: UIViewController {
     
     //MARK: - Outlets and variables
     @IBOutlet weak var groupImage: UIImageView!
@@ -19,6 +19,7 @@ class GroupDetailViewController: UIViewController, UITableViewDelegate, UITableV
     var searchArray:[ChatRoomMembers]! = []
     var userName:JID!
     var isAdmin = false
+    var group:Rosters!
     
     //MARK:- View Controller Delegate method
     override func viewDidLoad() {
@@ -32,6 +33,12 @@ class GroupDetailViewController: UIViewController, UITableViewDelegate, UITableV
         contactsSearchBar.delegate = self
         contactsSearchBar.placeholder = "Search User ..."
         groupDetailTableView.tableFooterView = UIView(frame: .zero)
+        self.addHandlers()
+    }
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        self.removeHandlers()
     }
     
     //MARK:- Get Data from Database
@@ -54,7 +61,84 @@ class GroupDetailViewController: UIViewController, UITableViewDelegate, UITableV
         // Dispose of any resources that can be recreated.
     }
     
-    // MARK: - Table view data source
+    
+    
+    @objc public func deleteBtnAxn(_ sender:UIButton){
+        do{
+            if activeSearch{
+                let corrId = UUID().uuidString
+                _ = try Platform.getInstance().getUserManager().sendRemoveChatRoomMemberRequest(corrId: corrId, roomJID: self.recieveUser, userJID: JID(jid:searchArray[sender.tag].jid))
+            }
+            else{
+                let corrId = UUID().uuidString
+                _ = try Platform.getInstance().getUserManager().sendRemoveChatRoomMemberRequest(corrId: corrId, roomJID: self.recieveUser, userJID: JID(jid:groupMembers[sender.tag].jid))
+            }
+        }
+        catch{
+            print(error.localizedDescription)
+        }
+    }
+    
+    
+    //MARK: - Get Data from Database
+    func getGroupData(){
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Rosters", jid: self.recieveUser.getBareJID(), success: { (users:[Rosters]) in
+            if !users.isEmpty {
+                self.groupImage.image =  #imageLiteral(resourceName: "group")
+                self.group = users[0]
+                ChatterUtil.setCirculerView(view: self.groupImage, radis: Float(self.groupImage.frame.size.height/2), borderColor: UIColor.clear, borderWidth: 0)
+                self.groupImage.clipsToBounds = true
+                self.groupName.text = users[0].name!
+                self.groupMembers =  Array(users[0].members!) as! [ChatRoomMembers]
+                
+                self.navigationItem.title = users[0].name
+                for member in self.groupMembers!{
+                    if member.jid!.elementsEqual(self.userName.getBareJID()!){
+                        if (member.affilation?.elementsEqual("admin"))! || (member.affilation?.elementsEqual("owner"))!{
+                            self.isAdmin = true
+                        }
+                    }
+                }
+                if self.isAdmin{
+                    let barButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(self.editGroup))
+                    barButton.tintColor = .white
+                    self.navigationItem.rightBarButtonItem = barButton
+                }
+                self.groupDetailTableView.reloadData()
+            }
+            else {
+                self.tabBarController?.tabBar.isHidden = true
+            }
+            
+        },failure: { (String) in
+            self.tabBarController?.tabBar.isHidden = true
+        })
+    }
+    
+    @objc public func editGroup(){
+        let createGroupVc = self.storyboard?.instantiateViewController(withIdentifier: "CreateGroupViewController") as? CreateGroupViewController
+        createGroupVc?.isGroupEditing =  true
+        createGroupVc?.group = self.group
+        self.navigationController?.pushViewController(createGroupVc!, animated: true)
+    }
+    
+    
+    //MARK:- KeyBoard Hide
+    //Calls this function when the tap is recognized.
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        self.contactsSearchBar.resignFirstResponder()
+        view.endEditing(true)
+    }
+    
+    @IBAction func leaveGrpBtnAxn(_ sender: Any) {
+        _ = Platform.getInstance().getUserManager().leaveChatRoom(roomJID: recieveUser)
+    }
+}
+
+// MARK: - Table view data source
+extension GroupDetailViewController :UITableViewDelegate, UITableViewDataSource{
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -111,55 +195,10 @@ class GroupDetailViewController: UIViewController, UITableViewDelegate, UITableV
     public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }
-    
-    @objc public func deleteBtnAxn(_ sender:UIButton){
-        do{
-            if activeSearch{
-                let corrId = UUID().uuidString
-                _ = try Platform.getInstance().getUserManager().sendRemoveChatRoomMemberRequest(corrId: corrId, roomJID: self.recieveUser, userJID: JID(jid:searchArray[sender.tag].jid))
-            }
-            else{
-                let corrId = UUID().uuidString
-                _ = try Platform.getInstance().getUserManager().sendRemoveChatRoomMemberRequest(corrId: corrId, roomJID: self.recieveUser, userJID: JID(jid:groupMembers[sender.tag].jid))
-            }
-        }
-        catch{
-            print(error.localizedDescription)
-        }
-    }
-    
-    
-    //MARK: - Get Data from Database
-    func getGroupData(){
-        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Rosters", jid: self.recieveUser.getBareJID(), success: { (users:[Rosters]) in
-            if !users.isEmpty {
-                self.groupImage.image =  #imageLiteral(resourceName: "group")
-                
-                ChatterUtil.setCirculerView(view: self.groupImage, radis: Float(self.groupImage.frame.size.height/2), borderColor: UIColor.clear, borderWidth: 0)
-                self.groupImage.clipsToBounds = true
-                self.groupName.text = users[0].name!
-                self.groupMembers =  Array(users[0].members!) as! [ChatRoomMembers]
-                
-                self.navigationItem.title = users[0].name
-                for member in self.groupMembers!{
-                    if member.jid!.elementsEqual(self.userName.getBareJID()!){
-                        if (member.affilation?.elementsEqual("admin"))! || (member.affilation?.elementsEqual("owner"))!{
-                            self.isAdmin = true
-                        }
-                    }
-                }
-                self.groupDetailTableView.reloadData()
-            }
-            else {
-                self.tabBarController?.tabBar.isHidden = true
-            }
-            
-        },failure: { (String) in
-            self.tabBarController?.tabBar.isHidden = true
-        })
-    }
-    
-    // MARK: -  Search Bar
+}
+
+// MARK: -  Search Bar
+extension GroupDetailViewController :UISearchBarDelegate,UISearchDisplayDelegate{
     public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         //self.activeSearch = true;
         
@@ -198,17 +237,27 @@ class GroupDetailViewController: UIViewController, UITableViewDelegate, UITableV
         self.groupDetailTableView.reloadData()
         
     }
+}
+
+
+extension GroupDetailViewController :EventHandler {
     
-    
-    //MARK:- KeyBoard Hide
-    //Calls this function when the tap is recognized.
-    @objc func dismissKeyboard() {
-        //Causes the view (or one of its embedded text fields) to resign the first responder status.
-        self.contactsSearchBar.resignFirstResponder()
-        view.endEditing(true)
+    func addHandlers(){
+        Platform.addEventHandler(type: .CHAT_ROOM_DATA_UPDATE, handler: self)
+        Platform.addEventHandler(type: .DATA_DELETE, handler: self)
     }
     
-    @IBAction func leaveGrpBtnAxn(_ sender: Any) {
-        _ = Platform.getInstance().getUserManager().leaveChatRoom(roomJID: recieveUser)
+    func removeHandlers(){
+        Platform.removeEventHandler(type: .CHAT_ROOM_DATA_UPDATE, handler: self)
+        Platform.removeEventHandler(type: .DATA_DELETE, handler: self)
+    }
+    
+    public func handle(e: Event) {
+        if e.getType() == EventType.CHAT_ROOM_DATA_UPDATE{
+            self.getGroupData()
+        }
+        if e.getType() == EventType.DATA_DELETE{
+            self.getGroupData()
+        }
     }
 }

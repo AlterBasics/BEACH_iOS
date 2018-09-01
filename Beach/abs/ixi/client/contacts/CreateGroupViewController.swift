@@ -20,6 +20,7 @@ class CreateGroupViewController: UIViewController {
     var activeSearch:Bool = false
     var searchArray:Array<Rosters> = []
     var selectedArray:Array<Rosters> = []
+    var group:Rosters!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,10 +29,6 @@ class CreateGroupViewController: UIViewController {
         self.membersTableView.dataSource = self
         groupSubjectLbl.delegate = self
         searchBar.delegate = self
-        self.title = "Create Group"
-        let barButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(self.createGroup))
-        barButton.tintColor = .white
-        self.navigationItem.rightBarButtonItem = barButton
     }
     
     override func didReceiveMemoryWarning() {
@@ -41,12 +38,25 @@ class CreateGroupViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         if isGroupEditing{
-            
+            searchBar.isHidden = true
+            selectedMembersLbl.isHidden = true
+            self.title = "Edit Group"
+            self.groupSubjectLbl.isUserInteractionEnabled = false
+            self.groupSubjectLbl.text = group.name
+            self.getRosterDataWithOutGroupMembers()
+            let barButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(self.editGroup))
+            barButton.tintColor = .white
+            self.navigationItem.rightBarButtonItem = barButton
         }
         else{
             searchBar.isHidden = true
             selectedMembersLbl.isHidden = true
+            self.groupSubjectLbl.isUserInteractionEnabled = true
             self.getRosterData()
+            self.title = "Create Group"
+            let barButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(self.createGroup))
+            barButton.tintColor = .white
+            self.navigationItem.rightBarButtonItem = barButton
         }
     }
     
@@ -71,16 +81,63 @@ class CreateGroupViewController: UIViewController {
         })
     }
     
+    func getRosterDataWithOutGroupMembers(){
+        SFCoreDataManager.sharedInstance.getInfoFromDataBase(entityName: "Rosters",jid: nil, success: { (rosters:[Rosters]) in
+            let sortedArray = rosters.sorted {$0.name?.localizedCaseInsensitiveCompare($1.name!) == ComparisonResult.orderedAscending }
+            self.membersArray = sortedArray.filter({ (roster) -> Bool in
+                if roster.is_group  {
+                    return false
+                }
+                for member in Array(self.group.members!) as! [ChatRoomMembers]{
+                    if (member.jid?.elementsEqual(roster.jid!))!{
+                        return false
+                    }
+                }
+                return true
+            })
+            
+            DispatchQueue.main.async {
+                if self.membersArray.count > 0 {
+                    self.searchBar.isHidden = false
+                    self.membersTableView.reloadData()
+                }
+                else {
+                    let label = UILabel()
+                    label.text = "NO member found"
+                    self.membersTableView.backgroundView = label
+                }
+                
+            }
+            
+        }, failure: { (String) in
+            print(String)
+        })
+    }
+    
+    @objc public func editGroup(){
+        do{
+            for member in self.selectedArray{
+                let corrId = UUID().uuidString
+                _ = try Platform.getInstance().getUserManager().sendAddChatRoomMemberRequest(corrId: corrId, roomJID: JID(jid:self.group.jid), userJID: JID(jid:member.jid))
+            }
+            Constants.appDelegate.hideActivitiIndicaterView()
+            self.navigationController?.popViewController(animated: true)
+        }
+        catch{
+            print(error.localizedDescription)
+        }
+    }
+    
     @objc public func createGroup(){
         if let name = groupSubjectLbl.text{
             Constants.appDelegate.addActivitiIndicaterView()
-           let roomJid = Platform.getInstance().getUserManager().createRoom(roomName: name)
+            let roomJid = Platform.getInstance().getUserManager().createRoom(roomName: name)
             if let jid = roomJid {
                 do{
-                for member in self.selectedArray{
-                    let corrId = UUID().uuidString
-                   _ = try Platform.getInstance().getUserManager().sendAddChatRoomMemberRequest(corrId: corrId, roomJID: jid, userJID: JID(jid:member.jid))
-                }
+                    for member in self.selectedArray{
+                        let corrId = UUID().uuidString
+                        _ = try Platform.getInstance().getUserManager().sendAddChatRoomMemberRequest(corrId: corrId, roomJID: jid, userJID: JID(jid:member.jid))
+                    }
                     Constants.appDelegate.hideActivitiIndicaterView()
                     self.navigationController?.popViewController(animated: true)
                 }
@@ -139,7 +196,7 @@ extension CreateGroupViewController :UITableViewDelegate,UITableViewDataSource{
                 cell?.accessoryType = .checkmark
             }
             else{
-               cell?.accessoryType = .none
+                cell?.accessoryType = .none
             }
         }
         else {
@@ -249,8 +306,6 @@ extension CreateGroupViewController : UISearchBarDelegate{
     }
     
 }
-
-
 
 //MARK:- Text Fields delegate function
 extension CreateGroupViewController:UITextFieldDelegate{

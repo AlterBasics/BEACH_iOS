@@ -1,7 +1,7 @@
 import SF_swift_framework
 import UIKit
 
-public class UserChatViewController: UIViewController , UITableViewDelegate, UITableViewDataSource,UITextViewDelegate,ChatListener,UIImagePickerControllerDelegate,UINavigationControllerDelegate{
+public class UserChatViewController: UIViewController {
     
     
     //MARK: - Outlets & Variables
@@ -63,7 +63,9 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         self.tabBarController?.tabBar.isHidden = false
         Constants.appDelegate.presentViewController = nil
         SDKLoader.getMessageReceiver().removeChatListener(chatListener: self)
-        _ = Platform.getInstance().getChatManager().sendInactiveCSN(to: recieveUser)
+        if cSNStatus {
+            _ = Platform.getInstance().getChatManager().sendInactiveCSN(to: recieveUser)
+        }
     }
     
     @IBAction func userDetaisAction(_ sender: Any) {
@@ -154,46 +156,7 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
     }
     // Get path for a file in the directory
     
-    //MARK:- Image Picker Method
-    //Open gallery on Gallery button
-    func openGallary()
-    {
-        imagePicker.allowsEditing = false
-        imagePicker.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
-        present(imagePicker, animated: true, completion: nil)
-    }
-    
-    //Open Camera on camera button
-    func openCamera()
-    {
-        if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)){
-            imagePicker.allowsEditing = false
-            imagePicker.sourceType = UIImagePickerControllerSourceType.camera
-            imagePicker.cameraCaptureMode = .photo
-            present(imagePicker, animated: true, completion: nil)
-        }else{
-            let alert = UIAlertController(title: "Camera Not Found", message: "This device has no Camera", preferredStyle: .alert)
-            let ok = UIAlertAction(title: "OK", style:.default, handler: nil)
-            alert.addAction(ok)
-            present(alert, animated: true, completion: nil)
-        }
-    }
-    
-    // Cancel image picker view
-    public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        attachView.isHidden = false
-        chatView.isHidden = true
-        imageView.isHidden = false
-        dismiss(animated: true, completion: nil)
-        self.imageInfo = info
-        let image = info[UIImagePickerControllerOriginalImage] as? UIImage
-        self.compressImage = ChatterUtil.compressedJpeg(image: image, compressionTimes: 1)
-        imageView.image = compressImage
-    }
+
     
     //MARK:- Get JID of reciever
     public func getJid()-> String {
@@ -216,77 +179,6 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         alertView.addAction(oKAction)
         alertView.addAction(cancelAction)
         self.present(alertView, animated: true, completion: nil)
-    }
-    
-    //MARK:- Table View Delegate Method
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //        self.message = (message).sorted(by: { $0.create_time > $1.create_time})
-        if message.count > 500 && !isRefresh {
-            return 500
-        }
-        return message.count + 1
-    }
-    
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == 0 {
-            let cell = UITableViewCell()
-            return cell
-        }
-        if message[indexPath.row - 1].direction ==   Direction.SEND.rawValue
-        {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SendTextTableViewCell", for: indexPath) as? SendTextTableViewCell
-            cell?.selectionStyle = .none
-            cell?.sendTextLabel.text = message[indexPath.row -  1].chatline
-            if message[indexPath.row -  1].delivery_status == 1{
-                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "read_tick")
-            }
-            else if (message[indexPath.row -  1].delivery_status == 2 || message[indexPath.row -  1].delivery_status == 3){
-                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "recieved_tick")
-            }
-            else if message[indexPath.row -  1].delivery_status == 4{
-                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "displayed_tick")
-            }
-            else {
-                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "unread_tick")
-            }
-            cell?.sendTextDateLabel.text = ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time))  as Date)
-            return cell!
-        }
-        else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "RecieveTextTableViewCell", for: indexPath) as? RecieveTextTableViewCell
-            if recieveUserRoster.is_group {
-                cell?.memberName.isHidden = false
-                cell?.memberName.text = message[indexPath.row - 1].peer_res
-            }
-            else {
-                cell?.memberName.isHidden = true
-            }
-            cell?.selectionStyle = .none
-            cell?.recieveTextLabel.text =  message[indexPath.row - 1].chatline
-            cell?.recieveTextDateLabel.text =  ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time)) as Date)
-            return cell!
-        }
-        
-    }
-    
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == 0 {
-            return 10
-        }
-        return UITableViewAutomaticDimension
-    }
-    
-    public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
-    }
-    
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
-        self.bottomConstraint.constant = 0
-        self.textView.endEditing(true)
     }
     
     
@@ -358,60 +250,7 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         self.view.endEditing(true)
     }
     
-    //MARK:- TextView Delegate method
-    public func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == "write message..."
-        {
-            textView.text = ""
-        }
-        textView.becomeFirstResponder()
-    }
-    
-    public func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text == ""
-        {
-            textView.text = "write message..."
-        }
-        textView.resignFirstResponder()
-        if cSNStatus{
-            _ = Platform.getInstance().getChatManager().sendInactiveCSN(to:recieveUser!)
-        }
-        
-    }
-    
-    public func textViewDidChange(_ textView: UITextView) {
-        self.textViewHeight = textView.frame.size.height
-        if textView.frame.size.height  == 120 {
-            textView.isScrollEnabled = true
-        }
-        else {
-            textView.isScrollEnabled = false
-        }
-    }
-    
-    func textViewShouldReturn(_ textView: UITextView) -> Bool {
-        self.view.endEditing(true)
-        if cSNStatus{
-            _ = Platform.getInstance().getChatManager().sendGoneCSN(to: recieveUser!)
-        }
-        return false
-    }
-    
-    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool{
-        if cSNStatus{
-            _ = Platform.getInstance().getChatManager().sendComposingCSN(to:recieveUser!)
-            NSObject.cancelPreviousPerformRequests(
-                withTarget: self,
-                selector: #selector( self.sendCSNStatus),
-                object: textView)
-            self.perform(
-                #selector(self.sendCSNStatus),
-                with: textView,
-                afterDelay: 5.0)
-        }
-        return true
-    }
-    
+
     @objc public func sendCSNStatus(){
         _ = Platform.getInstance().getChatManager().sendPausedCSN(to: recieveUser)
     }
@@ -526,7 +365,186 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
         refreshControl.endRefreshing()
     }
     
-    //MARK:- ChatListner Events
+
+    
+}
+
+//MARK:- Table View Delegate Method
+extension UserChatViewController:UITableViewDelegate, UITableViewDataSource{
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //        self.message = (message).sorted(by: { $0.create_time > $1.create_time})
+        if message.count > 500 && !isRefresh {
+            return 500
+        }
+        return message.count + 1
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row == 0 {
+            let cell = UITableViewCell()
+            return cell
+        }
+        if message[indexPath.row - 1].direction ==   Direction.SEND.rawValue
+        {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SendTextTableViewCell", for: indexPath) as? SendTextTableViewCell
+            cell?.selectionStyle = .none
+            cell?.sendTextLabel.text = message[indexPath.row -  1].chatline
+            if message[indexPath.row -  1].delivery_status == 1{
+                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "read_tick")
+            }
+            else if (message[indexPath.row -  1].delivery_status == 2 || message[indexPath.row -  1].delivery_status == 3){
+                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "recieved_tick")
+            }
+            else if message[indexPath.row -  1].delivery_status == 4{
+                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "displayed_tick")
+            }
+            else {
+                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "unread_tick")
+            }
+            cell?.sendTextDateLabel.text = ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time))  as Date)
+            return cell!
+        }
+        else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "RecieveTextTableViewCell", for: indexPath) as? RecieveTextTableViewCell
+            if recieveUserRoster.is_group {
+                cell?.memberName.isHidden = false
+                cell?.memberName.text = message[indexPath.row - 1].peer_res
+            }
+            else {
+                cell?.memberName.isHidden = true
+            }
+            cell?.selectionStyle = .none
+            cell?.recieveTextLabel.text =  message[indexPath.row - 1].chatline
+            cell?.recieveTextDateLabel.text =  ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time)) as Date)
+            return cell!
+        }
+        
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == 0 {
+            return 10
+        }
+        return UITableViewAutomaticDimension
+    }
+    
+    public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
+        self.bottomConstraint.constant = 0
+        self.textView.endEditing(true)
+    }
+    
+}
+
+//MARK:- TextView Delegate method
+extension UserChatViewController:UITextViewDelegate{
+    public func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == "write message..."
+        {
+            textView.text = ""
+        }
+        textView.becomeFirstResponder()
+    }
+    
+    public func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text == ""
+        {
+            textView.text = "write message..."
+        }
+        textView.resignFirstResponder()
+        if cSNStatus{
+            _ = Platform.getInstance().getChatManager().sendInactiveCSN(to:recieveUser!)
+        }
+        
+    }
+    
+    public func textViewDidChange(_ textView: UITextView) {
+        self.textViewHeight = textView.frame.size.height
+        if textView.frame.size.height  == 120 {
+            textView.isScrollEnabled = true
+        }
+        else {
+            textView.isScrollEnabled = false
+        }
+    }
+    
+    func textViewShouldReturn(_ textView: UITextView) -> Bool {
+        self.view.endEditing(true)
+        if cSNStatus{
+            _ = Platform.getInstance().getChatManager().sendGoneCSN(to: recieveUser!)
+        }
+        return false
+    }
+    
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool{
+        if cSNStatus{
+            _ = Platform.getInstance().getChatManager().sendComposingCSN(to:recieveUser!)
+            NSObject.cancelPreviousPerformRequests(
+                withTarget: self,
+                selector: #selector( self.sendCSNStatus),
+                object: textView)
+            self.perform(
+                #selector(self.sendCSNStatus),
+                with: textView,
+                afterDelay: 5.0)
+        }
+        return true
+    }
+    
+}
+
+//MARK:- Image Picker Method
+extension UserChatViewController:UIImagePickerControllerDelegate,UINavigationControllerDelegate{
+    //Open gallery on Gallery button
+    func openGallary()
+    {
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    //Open Camera on camera button
+    func openCamera()
+    {
+        if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)){
+            imagePicker.allowsEditing = false
+            imagePicker.sourceType = UIImagePickerControllerSourceType.camera
+            imagePicker.cameraCaptureMode = .photo
+            present(imagePicker, animated: true, completion: nil)
+        }else{
+            let alert = UIAlertController(title: "Camera Not Found", message: "This device has no Camera", preferredStyle: .alert)
+            let ok = UIAlertAction(title: "OK", style:.default, handler: nil)
+            alert.addAction(ok)
+            present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    // Cancel image picker view
+    public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        attachView.isHidden = false
+        chatView.isHidden = true
+        imageView.isHidden = false
+        dismiss(animated: true, completion: nil)
+        self.imageInfo = info
+        let image = info[UIImagePickerControllerOriginalImage] as? UIImage
+        self.compressImage = ChatterUtil.compressedJpeg(image: image, compressionTimes: 1)
+        imageView.image = compressImage
+    }
+}
+
+//MARK:- ChatListner Events
+extension UserChatViewController : ChatListener{
     //event when a message arrived
     public func onChatLine(packet: Message) {
         let from = packet.getFrom()
@@ -643,6 +661,4 @@ public class UserChatViewController: UIViewController , UITableViewDelegate, UIT
             self.title =  self.recieveUserRoster.name
         }
     }
-    
 }
-
