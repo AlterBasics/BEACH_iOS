@@ -208,6 +208,22 @@ public class ChatterUtil {
         }
     }
     
+    //MARK:- Create a directory to read write media data
+    public static func createCommonDirectory() {
+        let paths = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)
+        let dataPath = paths[0].appending("/sf") 
+        
+        if !FileManager.default.fileExists(atPath: dataPath) {
+            do {
+            try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
+            }
+            catch{
+                
+            }
+        }
+    }
+
+    
     // MARK:- Send Notification Token to Server
     public static func sendNotificationKey(pushNotificationService:PushNotificationService){
         if UserDefaults.standard.object(forKey: "NOTIFICATIONTOKEN") != nil {

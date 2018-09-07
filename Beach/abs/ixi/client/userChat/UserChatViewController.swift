@@ -83,15 +83,41 @@ public class UserChatViewController: UIViewController {
         if compressImage == nil {
             return
         }
+        do {
+        Constants.appDelegate.addActivitiIndicaterView()
         let messageId = UUID().uuidString
-        let mediaId = UUID().uuidString
-        let path = "/image.jpg"
-        let filePath = documentsDirectory().appending(path)
-        _ = saveImage(image: compressImage!, path: filePath)
+        let path = "/image_\(messageId).jpg"
+        let filePath =  directory().appending(path)
+        let imageData = UIImageJPEGRepresentation(self.compressImage, 0.8)!   // if you want to save as JPEG
+//        let isWritable = FileManager.default.isWritableFile(atPath: filePath)
+//            if isWritable{
+            _ = try imageData.write(to:URL(fileURLWithPath:filePath),options:.atomic)
         self.textView.text = ""
-        _ =  Platform.getInstance().getChatManager().sendMediaMessage(messageId: messageId, mediaId: mediaId, toJID: recieveUser, isGroup: recieveUserRoster.is_group)
+            let destinationSize = CGSize.init(width: compressImage.size.width/10, height: compressImage.size.height/10)
+        UIGraphicsBeginImageContext(destinationSize)
+        compressImage.draw(in: CGRect(x: 0, y: 0, width: destinationSize.width, height: destinationSize.height))
+            let newImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+            let data = UIImageJPEGRepresentation(newImage!, 0.4)!
+        let imageString = data.base64EncodedString()
+        _ =  Platform.getInstance().getChatManager().sendMedia(conversationId:"", messageId: messageId, mediaId: messageId, filePath: path, contentType: ContentType(val: ContentType.IMAGE_JPEG), thumb: imageString, to: recieveUser, isGroup: recieveUserRoster.is_group,  success: { (str) in
+            print(str)
+            self.attachView.isHidden = true
+            self.chatView.isHidden = false
+            self.imageView.isHidden = true
+            self.imageView.image = #imageLiteral(resourceName: "add")
+            Constants.appDelegate.hideActivitiIndicaterView()
+        }, failure: { (str) in
+            print(str)
+            
+            Constants.appDelegate.hideActivitiIndicaterView()
+        })
+//            }
+        }
+        catch {
+           Constants.appDelegate.hideActivitiIndicaterView()
+        }
     }
-    
     @IBAction func attachButtonAction(_ sender: Any) {
         
         let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .actionSheet)
@@ -139,20 +165,10 @@ public class UserChatViewController: UIViewController {
         
     }
     
-    
-    //MARK:- Save Image locally
-    func saveImage (image: UIImage, path: String ) -> Bool{
-        //let imageData = UIImagePNGRepresentation(image)! as! NSMutableData // if you want to save as PNG
-        let imageData = UIImageJPEGRepresentation(image, 0.8)! as! NSMutableData   // if you want to save as JPEG
-        _ = FileManager.default.isWritableFile(atPath: path)
-        let result = imageData.write(toFile:path,atomically:false)
-        return result
-    }
-    
     //MARK:-  Get the documents Directory
-    func documentsDirectory() -> String {
-        let documentsFolderPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        return documentsFolderPath
+    func directory() -> String {
+        let documentsFolderPath = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0]
+        return documentsFolderPath.appending("/sf")
     }
     // Get path for a file in the directory
     
@@ -390,25 +406,58 @@ extension UserChatViewController:UITableViewDelegate, UITableViewDataSource{
         }
         if message[indexPath.row - 1].direction ==   Direction.SEND.rawValue
         {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SendTextTableViewCell", for: indexPath) as? SendTextTableViewCell
-            cell?.selectionStyle = .none
-            cell?.sendTextLabel.text = message[indexPath.row -  1].chatline
-            if message[indexPath.row -  1].delivery_status == 1{
-                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "read_tick")
+            if message[indexPath.row - 1].chatline_type == ChatLineType.TEXT.rawValue{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "SendTextTableViewCell", for: indexPath) as? SendTextTableViewCell
+                cell?.selectionStyle = .none
+                cell?.sendTextLabel.text = message[indexPath.row -  1].chatline
+                if message[indexPath.row -  1].delivery_status == 1{
+                    cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "read_tick")
+                }
+                else if (message[indexPath.row -  1].delivery_status == 2 || message[indexPath.row -  1].delivery_status == 3){
+                    cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "recieved_tick")
+                }
+                else if message[indexPath.row -  1].delivery_status == 4{
+                    cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "displayed_tick")
+                }
+                else {
+                    cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "unread_tick")
+                }
+                cell?.sendTextDateLabel.text = ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time))  as Date)
+                return cell!
             }
-            else if (message[indexPath.row -  1].delivery_status == 2 || message[indexPath.row -  1].delivery_status == 3){
-                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "recieved_tick")
+            else{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "SendImageTableViewCell", for: indexPath) as? SendImageTableViewCell
+                cell?.selectionStyle = .none
+                print(message[indexPath.row - 1].media?.mediaPath!)
+                let imageURL = URL(fileURLWithPath: self.directory() + (message[indexPath.row - 1].media?.mediaPath!)!)
+                print(imageURL.path)
+                let image = UIImage(contentsOfFile: imageURL.path)
+                let width = UIScreen.main.bounds.size.width * 0.75
+                let height = (width * (image?.size.height)!)/(image?.size.width)!
+                var frame = cell?.imageView?.frame
+                frame?.size.width = width
+                frame?.size.height = height
+                cell?.sendImage?.frame = frame!
+                cell?.sendImage?.image = image
+                cell?.leadingConstraint.constant = (UIScreen.main.bounds.size.width * 0.25) - 5
+                if message[indexPath.row -  1].delivery_status == 1{
+                    cell?.sendImageSeenimageView.image = #imageLiteral(resourceName: "read_tick")
+                }
+                else if (message[indexPath.row -  1].delivery_status == 2 || message[indexPath.row -  1].delivery_status == 3){
+                    cell?.sendImageSeenimageView.image = #imageLiteral(resourceName: "recieved_tick")
+                }
+                else if message[indexPath.row -  1].delivery_status == 4{
+                    cell?.sendImageSeenimageView.image = #imageLiteral(resourceName: "displayed_tick")
+                }
+                else {
+                    cell?.sendImageSeenimageView.image = #imageLiteral(resourceName: "unread_tick")
+                }
+                cell?.sendImageDateLabel.text = ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time))  as Date)
+                return cell!
             }
-            else if message[indexPath.row -  1].delivery_status == 4{
-                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "displayed_tick")
-            }
-            else {
-                cell?.sendTextSeenImage.image = #imageLiteral(resourceName: "unread_tick")
-            }
-            cell?.sendTextDateLabel.text = ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time))  as Date)
-            return cell!
         }
         else {
+            if message[indexPath.row - 1].chatline_type == ChatLineType.TEXT.rawValue{
             let cell = tableView.dequeueReusableCell(withIdentifier: "RecieveTextTableViewCell", for: indexPath) as? RecieveTextTableViewCell
             if recieveUserRoster.is_group {
                 cell?.memberName.isHidden = false
@@ -421,6 +470,13 @@ extension UserChatViewController:UITableViewDelegate, UITableViewDataSource{
             cell?.recieveTextLabel.text =  message[indexPath.row - 1].chatline
             cell?.recieveTextDateLabel.text =  ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time)) as Date)
             return cell!
+            }
+            else{
+             let cell = tableView.dequeueReusableCell(withIdentifier: "RecieveImageTableViewCell", for: indexPath) as? RecieveImageTableViewCell
+                let imageData = Data(base64Encoded: (message[indexPath.row - 1].media?.thumb!)!, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)
+                cell?.imageView?.image = UIImage(data: imageData!)
+                return cell!
+            }
         }
         
     }

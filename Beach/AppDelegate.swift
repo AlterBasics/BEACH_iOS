@@ -29,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.getRootViewController()
 
         ChatterUtil.setNavigationBar()
+        ChatterUtil.createCommonDirectory()
         
         //Configure Firebase
         FirebaseApp.configure()
