@@ -88,17 +88,19 @@ public class UserChatViewController: UIViewController {
         let messageId = UUID().uuidString
         let path = "/image_\(messageId).jpg"
         let filePath =  directory().appending(path)
-        let imageData = UIImageJPEGRepresentation(self.compressImage, 0.8)!   // if you want to save as JPEG
+        let imageData = UIImageJPEGRepresentation(self.compressImage, 0.1)!
+            print(imageData.count)// if you want to save as JPEG
 //        let isWritable = FileManager.default.isWritableFile(atPath: filePath)
 //            if isWritable{
             _ = try imageData.write(to:URL(fileURLWithPath:filePath),options:.atomic)
         self.textView.text = ""
-            let destinationSize = CGSize.init(width: compressImage.size.width/10, height: compressImage.size.height/10)
+            let destinationSize = CGSize.init(width: 10, height: compressImage.size.height*10/compressImage.size.width)
         UIGraphicsBeginImageContext(destinationSize)
         compressImage.draw(in: CGRect(x: 0, y: 0, width: destinationSize.width, height: destinationSize.height))
             let newImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-            let data = UIImageJPEGRepresentation(newImage!, 0.4)!
+            let data = UIImageJPEGRepresentation(newImage!, 0)!
+            print(data.count)
         let imageString = data.base64EncodedString()
         _ =  Platform.getInstance().getChatManager().sendMedia(conversationId:"", messageId: messageId, mediaId: messageId, filePath: path, contentType: ContentType(val: ContentType.IMAGE_JPEG), thumb: imageString, to: recieveUser, isGroup: recieveUserRoster.is_group,  success: { (str) in
             print(str)
@@ -380,7 +382,6 @@ public class UserChatViewController: UIViewController {
         self.scrollToBottom()
         refreshControl.endRefreshing()
     }
-    
 
     
 }
@@ -428,9 +429,7 @@ extension UserChatViewController:UITableViewDelegate, UITableViewDataSource{
             else{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SendImageTableViewCell", for: indexPath) as? SendImageTableViewCell
                 cell?.selectionStyle = .none
-                print(message[indexPath.row - 1].media?.mediaPath!)
                 let imageURL = URL(fileURLWithPath: self.directory() + (message[indexPath.row - 1].media?.mediaPath!)!)
-                print(imageURL.path)
                 let image = UIImage(contentsOfFile: imageURL.path)
                 let width = UIScreen.main.bounds.size.width * 0.75
                 let height = (width * (image?.size.height)!)/(image?.size.width)!
