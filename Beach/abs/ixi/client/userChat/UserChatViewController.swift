@@ -94,12 +94,12 @@ public class UserChatViewController: UIViewController {
 //            if isWritable{
             _ = try imageData.write(to:URL(fileURLWithPath:filePath),options:.atomic)
         self.textView.text = ""
-            let destinationSize = CGSize.init(width: 10, height: compressImage.size.height*10/compressImage.size.width)
+            let destinationSize = CGSize.init(width: 50, height: compressImage.size.height*50/compressImage.size.width)
         UIGraphicsBeginImageContext(destinationSize)
         compressImage.draw(in: CGRect(x: 0, y: 0, width: destinationSize.width, height: destinationSize.height))
             let newImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-            let data = UIImageJPEGRepresentation(newImage!, 0)!
+            let data = UIImageJPEGRepresentation(newImage!, 0.1)!
             print(data.count)
         let imageString = data.base64EncodedString()
         _ =  Platform.getInstance().getChatManager().sendMedia(conversationId:"", messageId: messageId, mediaId: messageId, filePath: path, contentType: ContentType(val: ContentType.IMAGE_JPEG), thumb: imageString, to: recieveUser, isGroup: recieveUserRoster.is_group,  success: { (str) in
@@ -473,7 +473,7 @@ extension UserChatViewController:UITableViewDelegate, UITableViewDataSource{
             else{
              let cell = tableView.dequeueReusableCell(withIdentifier: "RecieveImageTableViewCell", for: indexPath) as? RecieveImageTableViewCell
                 let imageData = Data(base64Encoded: (message[indexPath.row - 1].media?.thumb!)!, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)
-                cell?.imageView?.image = UIImage(data: imageData!)
+                cell?.recieveImageButton.setImage(UIImage(data: imageData!), for: .normal)
                 return cell!
             }
         }
