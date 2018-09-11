@@ -84,40 +84,40 @@ public class UserChatViewController: UIViewController {
             return
         }
         do {
-        Constants.appDelegate.addActivitiIndicaterView()
-        let messageId = UUID().uuidString
-        let path = "/image_\(messageId).jpg"
-        let filePath =  directory().appending(path)
-        let imageData = UIImageJPEGRepresentation(self.compressImage, 0.1)!
+            Constants.appDelegate.addActivitiIndicaterView()
+            let messageId = UUID().uuidString
+            let path = "/image_\(messageId).jpg"
+            let filePath =  directory().appending(path)
+            let imageData = UIImageJPEGRepresentation(self.compressImage, 0.1)!
             print(imageData.count)// if you want to save as JPEG
-//        let isWritable = FileManager.default.isWritableFile(atPath: filePath)
-//            if isWritable{
+            //        let isWritable = FileManager.default.isWritableFile(atPath: filePath)
+            //            if isWritable{
             _ = try imageData.write(to:URL(fileURLWithPath:filePath),options:.atomic)
-        self.textView.text = ""
+            self.textView.text = ""
             let destinationSize = CGSize.init(width: 50, height: compressImage.size.height*50/compressImage.size.width)
-        UIGraphicsBeginImageContext(destinationSize)
-        compressImage.draw(in: CGRect(x: 0, y: 0, width: destinationSize.width, height: destinationSize.height))
+            UIGraphicsBeginImageContext(destinationSize)
+            compressImage.draw(in: CGRect(x: 0, y: 0, width: destinationSize.width, height: destinationSize.height))
             let newImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+            UIGraphicsEndImageContext()
             let data = UIImageJPEGRepresentation(newImage!, 0.1)!
             print(data.count)
-        let imageString = data.base64EncodedString()
-        _ =  Platform.getInstance().getChatManager().sendMedia(conversationId:"", messageId: messageId, mediaId: messageId, filePath: path, contentType: ContentType(val: ContentType.IMAGE_JPEG), thumb: imageString, to: recieveUser, isGroup: recieveUserRoster.is_group,  success: { (str) in
-            print(str)
-            self.attachView.isHidden = true
-            self.chatView.isHidden = false
-            self.imageView.isHidden = true
-            self.imageView.image = #imageLiteral(resourceName: "add")
-            Constants.appDelegate.hideActivitiIndicaterView()
-        }, failure: { (str) in
-            print(str)
-            
-            Constants.appDelegate.hideActivitiIndicaterView()
-        })
-//            }
+            let imageString = data.base64EncodedString()
+            _ =  Platform.getInstance().getChatManager().sendMedia(conversationId:"", messageId: messageId, mediaId: messageId, filePath: path, contentType: ContentType(val: ContentType.IMAGE_JPEG), thumb: imageString, to: recieveUser, isGroup: recieveUserRoster.is_group,  success: { (str) in
+                print(str)
+                self.getChatData()
+                self.attachView.isHidden = true
+                self.chatView.isHidden = false
+                self.imageView.isHidden = true
+                self.imageView.image = #imageLiteral(resourceName: "add")
+                Constants.appDelegate.hideActivitiIndicaterView()
+            }, failure: { (str) in
+                print(str)
+                
+                Constants.appDelegate.hideActivitiIndicaterView()
+            })
         }
         catch {
-           Constants.appDelegate.hideActivitiIndicaterView()
+            Constants.appDelegate.hideActivitiIndicaterView()
         }
     }
     @IBAction func attachButtonAction(_ sender: Any) {
@@ -174,7 +174,7 @@ public class UserChatViewController: UIViewController {
     }
     // Get path for a file in the directory
     
-
+    
     
     //MARK:- Get JID of reciever
     public func getJid()-> String {
@@ -268,7 +268,7 @@ public class UserChatViewController: UIViewController {
         self.view.endEditing(true)
     }
     
-
+    
     @objc public func sendCSNStatus(){
         _ = Platform.getInstance().getChatManager().sendPausedCSN(to: recieveUser)
     }
@@ -290,11 +290,11 @@ public class UserChatViewController: UIViewController {
                         self.textView.text = "you are not member of group"
                         for member in Array(users[0].members!) as! [ChatRoomMembers]{
                             if (member.jid?.elementsEqual(self.user.getBareJID()))!{
-                                    self.sendButton.isUserInteractionEnabled = true
+                                self.sendButton.isUserInteractionEnabled = true
                                 self.sendButton.isHidden = false
                                 self.textView.isUserInteractionEnabled = true
                                 self.textView.text = "write message..."
-                                }
+                            }
                         }
                         let image = UIImage(named: "info")
                         let renderedImage = image?.withRenderingMode(.alwaysOriginal)
@@ -382,7 +382,7 @@ public class UserChatViewController: UIViewController {
         self.scrollToBottom()
         refreshControl.endRefreshing()
     }
-
+    
     
 }
 
@@ -433,10 +433,7 @@ extension UserChatViewController:UITableViewDelegate, UITableViewDataSource{
                 let image = UIImage(contentsOfFile: imageURL.path)
                 let width = UIScreen.main.bounds.size.width * 0.75
                 let height = (width * (image?.size.height)!)/(image?.size.width)!
-                var frame = cell?.imageView?.frame
-                frame?.size.width = width
-                frame?.size.height = height
-                cell?.sendImage?.frame = frame!
+                cell?.imageHeight.constant = height
                 cell?.sendImage?.image = image
                 cell?.leadingConstraint.constant = (UIScreen.main.bounds.size.width * 0.25) - 5
                 if message[indexPath.row -  1].delivery_status == 1{
@@ -457,23 +454,37 @@ extension UserChatViewController:UITableViewDelegate, UITableViewDataSource{
         }
         else {
             if message[indexPath.row - 1].chatline_type == ChatLineType.TEXT.rawValue{
-            let cell = tableView.dequeueReusableCell(withIdentifier: "RecieveTextTableViewCell", for: indexPath) as? RecieveTextTableViewCell
-            if recieveUserRoster.is_group {
-                cell?.memberName.isHidden = false
-                cell?.memberName.text = message[indexPath.row - 1].peer_res
-            }
-            else {
-                cell?.memberName.isHidden = true
-            }
-            cell?.selectionStyle = .none
-            cell?.recieveTextLabel.text =  message[indexPath.row - 1].chatline
-            cell?.recieveTextDateLabel.text =  ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time)) as Date)
-            return cell!
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RecieveTextTableViewCell", for: indexPath) as? RecieveTextTableViewCell
+                if recieveUserRoster.is_group {
+                    cell?.memberName.isHidden = false
+                    cell?.memberName.text = message[indexPath.row - 1].peer_res
+                }
+                else {
+                    cell?.memberName.isHidden = true
+                }
+                cell?.selectionStyle = .none
+                cell?.recieveTextLabel.text =  message[indexPath.row - 1].chatline
+                cell?.recieveTextDateLabel.text =  ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time)) as Date)
+                return cell!
             }
             else{
-             let cell = tableView.dequeueReusableCell(withIdentifier: "RecieveImageTableViewCell", for: indexPath) as? RecieveImageTableViewCell
-                let imageData = Data(base64Encoded: (message[indexPath.row - 1].media?.thumb!)!, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)
-                cell?.recieveImageButton.setImage(UIImage(data: imageData!), for: .normal)
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RecieveImageTableViewCell", for: indexPath) as? RecieveImageTableViewCell
+                if recieveUserRoster.is_group {
+                    cell?.recieveImageUserLabel.isHidden = false
+                    cell?.recieveImageUserLabel.text = message[indexPath.row - 1].peer_res
+                }
+                else {
+                    cell?.recieveImageUserLabel.isHidden = true
+                }
+                let thumb = (message[indexPath.row - 1].media?.thumb!)!
+                let imageData = Data(base64Encoded: thumb, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)
+                let image = UIImage(data: imageData!)
+                let width = UIScreen.main.bounds.size.width * 0.75
+                let height = (width * (image?.size.height)!)/(image?.size.width)!
+                cell?.trailingConstraint.constant = UIScreen.main.bounds.size.width * 0.25 - 5
+                cell?.imageHeight.constant = height
+                cell?.recieveImage.image = image
+                cell?.recieveImageDateLabel.text =  ChatterUtil.dateFormatter(date: ChatterUtil.getDate(seconds: String(message[indexPath.row - 1].create_time)) as Date)
                 return cell!
             }
         }

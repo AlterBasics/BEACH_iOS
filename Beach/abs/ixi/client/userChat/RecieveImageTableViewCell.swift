@@ -10,9 +10,10 @@ class RecieveImageTableViewCell: UITableViewCell {
     @IBOutlet var recieveImageButton: UIButton!
     @IBOutlet var recieveImage: UIImageView!
     
+    @IBOutlet weak var imageHeight: NSLayoutConstraint!
+    @IBOutlet weak var trailingConstraint: NSLayoutConstraint!
     override func awakeFromNib() {
         super.awakeFromNib()
-        ChatterUtil.setCirculerView(view: recieveImageView, radis: 5, borderColor: UIColor.clear, borderWidth: 0)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -5,6 +5,7 @@ class SendImageTableViewCell: UITableViewCell {
     
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var imageHeight: NSLayoutConstraint!
     @IBOutlet var sendImageSeenimageView: UIImageView!
     @IBOutlet var sendImageDateLabel: UILabel!
     @IBOutlet var sendImageLabel: UILabel!
