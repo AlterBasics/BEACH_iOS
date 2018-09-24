@@ -21,6 +21,7 @@ class CreateGroupViewController: UIViewController {
     var searchArray:Array<Rosters> = []
     var selectedArray:Array<Rosters> = []
     var group:Rosters!
+    private var queue:DispatchQueue = DispatchQueue.init(label: "queue")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +42,13 @@ class CreateGroupViewController: UIViewController {
             searchBar.isHidden = true
             selectedMembersLbl.isHidden = true
             self.title = "Edit Group"
-            self.groupSubjectLbl.isUserInteractionEnabled = false
-            self.groupSubjectLbl.text = group.name
+            if group.room_subject != nil && ((group.room_subject?.replacingOccurrences(of: " ", with: "")) != ""){
+                self.groupSubjectLbl.text = group.room_subject
+            }
+            else{
+                self.groupSubjectLbl.text = group.name
+            }
+            
             self.getRosterDataWithOutGroupMembers()
             let barButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(self.editGroup))
             barButton.tintColor = .white
@@ -51,7 +57,6 @@ class CreateGroupViewController: UIViewController {
         else{
             searchBar.isHidden = true
             selectedMembersLbl.isHidden = true
-            self.groupSubjectLbl.isUserInteractionEnabled = true
             self.getRosterData()
             self.title = "Create Group"
             let barButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(self.createGroup))
@@ -116,9 +121,12 @@ class CreateGroupViewController: UIViewController {
     
     @objc public func editGroup(){
         do{
+            if self.groupSubjectLbl.text != self.group.room_subject && self.groupSubjectLbl.text?.replacingOccurrences(of: " ", with: "") != "" {
+                _ = try Platform.getInstance().getUserManager().updateRoomSubject(roomJID:  JID(jid:self.group.jid), subject: self.groupSubjectLbl.text!)
+            }
+            
             for member in self.selectedArray{
-                let corrId = UUID().uuidString
-                _ = try Platform.getInstance().getUserManager().sendAddChatRoomMemberRequest(corrId: corrId, roomJID: JID(jid:self.group.jid), userJID: JID(jid:member.jid))
+                _ = try Platform.getInstance().getUserManager().sendAddChatRoomMemberRequest(roomJID: JID(jid:self.group.jid), userJID: JID(jid:member.jid))
             }
             Constants.appDelegate.hideActivitiIndicaterView()
             self.navigationController?.popViewController(animated: true)
@@ -131,22 +139,29 @@ class CreateGroupViewController: UIViewController {
     @objc public func createGroup(){
         if let name = groupSubjectLbl.text{
             Constants.appDelegate.addActivitiIndicaterView()
-            let roomJid = Platform.getInstance().getUserManager().createRoom(roomName: name)
-            if let jid = roomJid {
-                do{
-                    for member in self.selectedArray{
-                        let corrId = UUID().uuidString
-                        _ = try Platform.getInstance().getUserManager().sendAddChatRoomMemberRequest(corrId: corrId, roomJID: jid, userJID: JID(jid:member.jid))
+            do{
+                var members:[JID] = []
+                for member in self.selectedArray{
+                    try members.append(JID(jid:member.jid))
+                }
+                queue.async {
+                    let created = Platform.getInstance().getUserManager().createPrivateGroup(groupName: name, members: members)
+                    if !created{
+                        let alert = UIAlertController(title: nil, message: "Unable to create group.Please Try again.", preferredStyle: .alert)
+                        let ok = UIAlertAction(title: "OK", style:.default, handler: nil)
+                        alert.addAction(ok)
+                        self.present(alert, animated: true, completion: nil)
                     }
-                    Constants.appDelegate.hideActivitiIndicaterView()
-                    self.navigationController?.popViewController(animated: true)
+                    else{
+                        Constants.appDelegate.hideActivitiIndicaterView()
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
-                catch{
-                    print(error.localizedDescription)
-                }
+                
             }
-            
-            
+            catch{
+                print(error.localizedDescription)
+            }
         }
         else{
             let alert = UIAlertController(title: nil, message: "Please enter a group name", preferredStyle: .alert)

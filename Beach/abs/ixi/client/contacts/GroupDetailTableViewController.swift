@@ -11,7 +11,7 @@ class GroupDetailViewController: UIViewController {
     @IBOutlet weak var groupDetailTableView: UITableView!
     @IBOutlet weak var groupDetailView: UIView!
     @IBOutlet weak var contactsSearchBar: UISearchBar!
-    @IBOutlet weak var groupName: UILabel!
+    @IBOutlet weak var groupName: UITextField!
     @IBOutlet weak var leaveGroupBtn: NSLayoutConstraint!
     var recieveUser:JID!
     var groupMembers:[ChatRoomMembers]! = []
@@ -66,12 +66,10 @@ class GroupDetailViewController: UIViewController {
     @objc public func deleteBtnAxn(_ sender:UIButton){
         do{
             if activeSearch{
-                let corrId = UUID().uuidString
-                _ = try Platform.getInstance().getUserManager().sendRemoveChatRoomMemberRequest(corrId: corrId, roomJID: self.recieveUser, userJID: JID(jid:searchArray[sender.tag].jid))
+                _ = try Platform.getInstance().getUserManager().sendRemoveChatRoomMemberRequest( roomJID: self.recieveUser, userJID: JID(jid:searchArray[sender.tag].jid))
             }
             else{
-                let corrId = UUID().uuidString
-                _ = try Platform.getInstance().getUserManager().sendRemoveChatRoomMemberRequest(corrId: corrId, roomJID: self.recieveUser, userJID: JID(jid:groupMembers[sender.tag].jid))
+                _ = try Platform.getInstance().getUserManager().sendRemoveChatRoomMemberRequest( roomJID: self.recieveUser, userJID: JID(jid:groupMembers[sender.tag].jid))
             }
         }
         catch{
@@ -88,10 +86,17 @@ class GroupDetailViewController: UIViewController {
                 self.group = users[0]
                 ChatterUtil.setCirculerView(view: self.groupImage, radis: Float(self.groupImage.frame.size.height/2), borderColor: UIColor.clear, borderWidth: 0)
                 self.groupImage.clipsToBounds = true
-                self.groupName.text = users[0].name!
+                if users[0].room_subject != nil && users[0].room_subject?.replacingOccurrences(of: " ", with: "") !=  ""{
+                    self.groupName.text = users[0].room_subject!
+                    self.navigationItem.title = users[0].room_subject!
+                }
+                else{
+                    self.groupName.text = users[0].name!
+                    self.navigationItem.title = users[0].name
+                }
                 self.groupMembers =  Array(users[0].members!) as! [ChatRoomMembers]
                 
-                self.navigationItem.title = users[0].name
+                
                 for member in self.groupMembers!{
                     if member.jid!.elementsEqual(self.userName.getBareJID()!){
                         if (member.affilation?.elementsEqual("admin"))! || (member.affilation?.elementsEqual("owner"))!{
@@ -100,7 +105,14 @@ class GroupDetailViewController: UIViewController {
                     }
                 }
                 if self.isAdmin{
+                    self.groupName.isUserInteractionEnabled = false
                     let barButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(self.editGroup))
+                    barButton.tintColor = .white
+                    self.navigationItem.rightBarButtonItem = barButton
+                }
+                else{
+                    self.groupName.isUserInteractionEnabled = true
+                    let barButton = UIBarButtonItem(title: "Edit Subject", style: .plain, target: self, action: #selector(self.editGroupSubject))
                     barButton.tintColor = .white
                     self.navigationItem.rightBarButtonItem = barButton
                 }
@@ -113,6 +125,10 @@ class GroupDetailViewController: UIViewController {
         },failure: { (String) in
             self.tabBarController?.tabBar.isHidden = true
         })
+    }
+    
+    @objc public func editGroupSubject(){
+        _ = Platform.getInstance().getUserManager().updateRoomSubject(roomJID: recieveUser, subject: groupName.text!)
     }
     
     @objc public func editGroup(){

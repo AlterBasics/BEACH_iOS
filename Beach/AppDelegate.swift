@@ -253,21 +253,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///MARK:  Get Root ViewController Of App
     func getRootViewController(){
         SFCoreDataManager.sharedInstance.getDataFromDataBase(entityName: "SFUserDetail",jid:"", success: { (users:[SFUserDetail]) in
-            
+            self.addActivitiIndicaterView()
             if !users.isEmpty && users[0].login {
                 do{
                     try Platform.getInstance().getUserManager().reconnectLogin(userName: users[0].user_name!, password: users[0].password!,  domain:users[0].domain!, success:  { (String) in
                         do{
                             
                             _ = try Platform.getInstance().getUserManager().sendGetRosterRequest(version: UserDefaults.standard.object(forKey: "RosterVersion") as! Int)
-                            let corrId = UUID().uuidString
-                            _ = Platform.getInstance().getUserManager().sendGetChatRoomsRequest(corrId: corrId)
+                            _ = Platform.getInstance().getUserManager().sendGetChatRoomsRequest(success: { (rooms) in
+                                if rooms != nil {
+                                    for room in rooms!{
+                                        
+                                        _ = Platform.getInstance().getUserManager().sendGetChatRoomMembersRequest(roomJID: room.getRoomJID())
+                                        _ = Platform.getInstance().getUserManager().sendGetChatRoomInfoRequest(roomJID: room.getRoomJID())
+                                    }
+                                    self.hideActivitiIndicaterView()
+                                }
+                                else{
+                                     self.hideActivitiIndicaterView()
+                                }
+                            }, failure: { (str) in
+                                 self.hideActivitiIndicaterView()
+                                print(str)
+                            })
                             ChatterUtil.sendNotificationKey(pushNotificationService: PushNotificationService.FCM)
                         }
                         catch {
-                            
+                             self.hideActivitiIndicaterView()
                         }
                     }, failure: { (str) in
+                         self.hideActivitiIndicaterView()
                         print(str)
                     })
                     
@@ -280,7 +295,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
             else {
-                
+                self.hideActivitiIndicaterView()
                 let storyBoard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil);
                 
                 let objLoginViewController = (storyBoard.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController)!;

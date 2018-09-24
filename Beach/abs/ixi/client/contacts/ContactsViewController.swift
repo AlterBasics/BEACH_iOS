@@ -192,10 +192,21 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource{
                     cell?.userSelectedImageView.backgroundColor = UIColor.lightGray
                 }
             }
-            cell?.userNameUILabel.text = searchArray[indexPath.row].name
+            if searchArray[indexPath.row].is_group && searchArray[indexPath.row].room_subject != nil && ((searchArray[indexPath.row].room_subject?.replacingOccurrences(of: " ", with: "")) != ""){
+                cell?.userNameUILabel.text = searchArray[indexPath.row].room_subject
+            }
+            else{
+              cell?.userNameUILabel.text = searchArray[indexPath.row].name
+            }
+            
         }
         else {
+            if userName[indexPath.row].is_group && userName[indexPath.row].room_subject != nil && ((userName[indexPath.row].room_subject?.replacingOccurrences(of: " ", with: "")) != ""){
+                cell?.userNameUILabel.text = userName[indexPath.row].room_subject
+            }
+             else{
             cell?.userNameUILabel.text = userName[indexPath.row].name
+            }
             if userName[indexPath.row].is_group {
                 cell?.userSelectedImageView.isHidden = true
                 cell?.userImageImageView.image = #imageLiteral(resourceName: "group")

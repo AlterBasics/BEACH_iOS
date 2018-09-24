@@ -45,8 +45,16 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
             try Platform.getInstance().getUserManager().login(userName: usernameTextField.text!, password: password.text!,  domain:"alterbasics.com", success: { (String) in
                 do {
                     _ = try Platform.getInstance().getUserManager().getFullRoster()
-                    let corrId = UUID().uuidString
-                    _ = Platform.getInstance().getUserManager().sendGetChatRoomsRequest(corrId: corrId)
+                    _ = Platform.getInstance().getUserManager().sendGetChatRoomsRequest(success: { (rooms) in
+                        if rooms != nil {
+                            for room in rooms!{
+                                _ = Platform.getInstance().getUserManager().sendGetChatRoomMembersRequest(roomJID: room.getRoomJID())
+                                _ = Platform.getInstance().getUserManager().sendGetChatRoomInfoRequest(roomJID: room.getRoomJID())
+                            }
+                        }
+                    }, failure: { (str) in
+                        print(str)
+                    })
                     Constants.appDelegate.registerForRemoteNotification(application: UIApplication.shared)
                     ChatterUtil.sendNotificationKey(pushNotificationService: PushNotificationService.FCM)
                 }

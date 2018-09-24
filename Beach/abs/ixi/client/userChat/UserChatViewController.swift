@@ -312,7 +312,12 @@ public class UserChatViewController: UIViewController {
                 self.userImage.clipsToBounds = true
                 print(users[0].name! + "324u982`3421980912")
                 self.recieveUserRoster = users[0]
-                self.title =  self.recieveUserRoster.name
+                if self.recieveUserRoster.is_group && self.recieveUserRoster.room_subject != nil && self.recieveUserRoster.room_subject?.replacingOccurrences(of: " ", with: "") != "" {
+                    self.title = self.recieveUserRoster.room_subject
+                }
+                else{
+                    self.title =  self.recieveUserRoster.name
+                }
                 self.tabBarController?.tabBar.isHidden = true
                 self.getChatData()
             }

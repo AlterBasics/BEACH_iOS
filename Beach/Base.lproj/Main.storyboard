@@ -757,25 +757,24 @@
                                                     <constraint firstAttribute="width" constant="50" id="gMf-fq-aoG"/>
                                                 </constraints>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 Recipients selected" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NN8-f4-8pW">
-                                                <rect key="frame" x="80" y="10" width="285" height="35"/>
-                                                <color key="backgroundColor" red="0.92549019610000005" green="0.92549019610000005" blue="0.92549019610000005" alpha="1" colorSpace="calibratedRGB"/>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="NsG-uq-gXd">
+                                                <rect key="frame" x="80" y="9.5" width="285" height="35"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="35" id="w5E-Ue-WXY"/>
+                                                    <constraint firstAttribute="height" constant="35" id="gdi-Dc-Amm"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="0.84999999999999998" colorSpace="calibratedRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
+                                                <nil key="textColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
                                         </subviews>
                                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="2rk-Qq-wah" firstAttribute="leading" secondItem="QpY-V8-Y0Y" secondAttribute="leading" constant="20" id="2Vs-pW-CuL"/>
                                             <constraint firstAttribute="height" constant="55" id="A1v-gJ-MCS"/>
-                                            <constraint firstItem="NN8-f4-8pW" firstAttribute="leading" secondItem="2rk-Qq-wah" secondAttribute="trailing" constant="10" id="htF-Li-O8u"/>
+                                            <constraint firstItem="NsG-uq-gXd" firstAttribute="leading" secondItem="2rk-Qq-wah" secondAttribute="trailing" constant="10" id="Geb-KL-fNN"/>
+                                            <constraint firstAttribute="trailing" secondItem="NsG-uq-gXd" secondAttribute="trailing" constant="10" id="PTh-NG-o3l"/>
                                             <constraint firstItem="2rk-Qq-wah" firstAttribute="centerY" secondItem="QpY-V8-Y0Y" secondAttribute="centerY" id="nN1-Kd-ZaZ"/>
-                                            <constraint firstAttribute="trailing" secondItem="NN8-f4-8pW" secondAttribute="trailing" constant="10" id="rgj-DV-3BS"/>
-                                            <constraint firstItem="NN8-f4-8pW" firstAttribute="centerY" secondItem="QpY-V8-Y0Y" secondAttribute="centerY" id="s44-Dt-wgq"/>
+                                            <constraint firstItem="NsG-uq-gXd" firstAttribute="centerY" secondItem="QpY-V8-Y0Y" secondAttribute="centerY" id="t9J-pf-oKT"/>
                                         </constraints>
                                     </view>
                                     <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="FgT-GO-cmG">
@@ -823,7 +822,7 @@
                         <outlet property="groupDetailTableView" destination="vgz-I4-ubb" id="jun-To-DA9"/>
                         <outlet property="groupDetailView" destination="QpY-V8-Y0Y" id="WSZ-5R-rDr"/>
                         <outlet property="groupImage" destination="2rk-Qq-wah" id="eXH-Ld-4ai"/>
-                        <outlet property="groupName" destination="NN8-f4-8pW" id="til-fJ-mim"/>
+                        <outlet property="groupName" destination="NsG-uq-gXd" id="aGH-Hv-nE2"/>
                         <outlet property="leaveGroupBtn" destination="5KC-fq-4FS" id="9Vo-uB-ACB"/>
                     </connections>
                 </viewController>
@@ -1142,7 +1141,7 @@
                                                         <rect key="frame" x="0.0" y="513" width="375" height="292"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KFg-2X-sgG" id="plk-Yu-8iy">
-                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="292"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="291.5"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="download_video" translatesAutoresizingMaskIntoConstraints="NO" id="foj-qt-90d">
