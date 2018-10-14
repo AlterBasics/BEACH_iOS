@@ -1,26 +1,29 @@
 PODS:
-  - Firebase/CoreOnly (5.6.0):
-    - FirebaseCore (= 5.1.1)
-  - Firebase/Messaging (5.6.0):
+  - Firebase/CoreOnly (5.9.0):
+    - FirebaseCore (= 5.1.4)
+  - Firebase/Messaging (5.9.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (= 3.1.0)
-  - FirebaseCore (5.1.1):
+    - FirebaseMessaging (= 3.1.2)
+  - FirebaseCore (5.1.4):
     - GoogleUtilities/Logger (~> 5.2)
-  - FirebaseInstanceID (3.2.1):
+  - FirebaseInstanceID (3.2.2):
     - FirebaseCore (~> 5.1)
-    - GoogleUtilities/Environment (~> 5.2)
-  - FirebaseMessaging (3.1.0):
+    - GoogleUtilities/Environment (~> 5.3)
+    - GoogleUtilities/UserDefaults (~> 5.3)
+  - FirebaseMessaging (3.1.2):
     - FirebaseCore (~> 5.0)
     - FirebaseInstanceID (~> 3.0)
     - GoogleUtilities/Reachability (~> 5.2)
     - Protobuf (~> 3.1)
-  - GoogleUtilities/Environment (5.2.2)
-  - GoogleUtilities/Logger (5.2.2):
+  - GoogleUtilities/Environment (5.3.0)
+  - GoogleUtilities/Logger (5.3.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/Reachability (5.2.2):
+  - GoogleUtilities/Reachability (5.3.0):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (5.3.0):
     - GoogleUtilities/Logger
   - Protobuf (3.6.1)
-  - ReachabilitySwift (4.1.0)
+  - ReachabilitySwift (4.3.0)
   - StringflowFramework-iOS (1.1.1)
 
 DEPENDENCIES:
@@ -29,13 +32,13 @@ DEPENDENCIES:
   - StringflowFramework-iOS
 
 SPEC CHECKSUMS:
-  Firebase: 75ea9e232eefa158c1049028030b8f661a2ccb62
-  FirebaseCore: cb9ee75e0894def766167c95a4d5a14b1c138269
-  FirebaseInstanceID: ea5af6920d0a4a29b40459d055bebe4a6c1333c4
-  FirebaseMessaging: f67b3719f520ee200da0e20ce577fe2bce0c01d0
-  GoogleUtilities: 06b66f9567769a7958db20a92f0128b2843e49d5
+  Firebase: 383fa29aca93e371cab776b48a5c66544d3c2003
+  FirebaseCore: 2a84b6b325792a4319ef71ee18819dcba08d2fd7
+  FirebaseInstanceID: 78ba376fcd5b94c001f9999b2cbd3d1f1e56e78d
+  FirebaseMessaging: d6feeb06218d2675b4149b0ada925a6b707a74cf
+  GoogleUtilities: 760ccb53b7c7f40f9c02d8c241f76f841a7a6162
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
-  ReachabilitySwift: 6849231cd4e06559f3b9ef4a97a0a0f96d41e09f
+  ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   StringflowFramework-iOS: 3cd69db90e10205b741760c92024f97a7fe78371
 
 PODFILE CHECKSUM: ef969e86368cbaba16c79fcf720c69efef0bae0c

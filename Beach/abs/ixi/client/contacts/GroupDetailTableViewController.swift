@@ -19,6 +19,7 @@ class GroupDetailViewController: UIViewController {
     var searchArray:[ChatRoomMembers]! = []
     var userName:JID!
     var isAdmin = false
+    var isOwner = false
     var group:Rosters!
     
     //MARK:- View Controller Delegate method
@@ -99,8 +100,12 @@ class GroupDetailViewController: UIViewController {
                 
                 for member in self.groupMembers!{
                     if member.jid!.elementsEqual(self.userName.getBareJID()!){
-                        if (member.affilation?.elementsEqual("admin"))! || (member.affilation?.elementsEqual("owner"))!{
+                        if (member.affilation?.elementsEqual("admin"))! {
                             self.isAdmin = true
+                        }
+                        else if (member.affilation?.elementsEqual("owner"))!{
+                            self.isAdmin = true
+                            self.isOwner = true
                         }
                     }
                 }
@@ -135,6 +140,7 @@ class GroupDetailViewController: UIViewController {
         let createGroupVc = self.storyboard?.instantiateViewController(withIdentifier: "CreateGroupViewController") as? CreateGroupViewController
         createGroupVc?.isGroupEditing =  true
         createGroupVc?.group = self.group
+        createGroupVc?.isOwner = self.isOwner
         self.navigationController?.pushViewController(createGroupVc!, animated: true)
     }
     

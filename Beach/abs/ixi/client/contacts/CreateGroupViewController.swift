@@ -10,7 +10,7 @@ import UIKit
 import SF_swift_framework
 
 class CreateGroupViewController: UIViewController {
-    
+    @IBOutlet weak var deleteGroupBtn:UIButton!
     @IBOutlet weak var selectedMembersLbl: UILabel!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var groupSubjectLbl: UITextField!
@@ -21,6 +21,7 @@ class CreateGroupViewController: UIViewController {
     var searchArray:Array<Rosters> = []
     var selectedArray:Array<Rosters> = []
     var group:Rosters!
+    var isOwner:Bool = false
     private var queue:DispatchQueue = DispatchQueue.init(label: "queue")
     
     override func viewDidLoad() {
@@ -38,7 +39,11 @@ class CreateGroupViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        deleteGroupBtn.isHidden = true
         if isGroupEditing{
+            if isOwner {
+                deleteGroupBtn.isHidden = false
+            }
             searchBar.isHidden = true
             selectedMembersLbl.isHidden = true
             self.title = "Edit Group"
@@ -146,16 +151,20 @@ class CreateGroupViewController: UIViewController {
                 }
                 queue.async {
                     let created = Platform.getInstance().getUserManager().createPrivateGroup(groupName: name, members: members)
-                    if !created{
-                        let alert = UIAlertController(title: nil, message: "Unable to create group.Please Try again.", preferredStyle: .alert)
-                        let ok = UIAlertAction(title: "OK", style:.default, handler: nil)
-                        alert.addAction(ok)
-                        self.present(alert, animated: true, completion: nil)
+                    DispatchQueue.main.async {
+                        if !created{
+                            let alert = UIAlertController(title: nil, message: "Unable to create group.Please Try again.", preferredStyle: .alert)
+                            let ok = UIAlertAction(title: "OK", style:.default, handler: nil)
+                            alert.addAction(ok)
+                            self.present(alert, animated: true, completion: nil)
+                        }
+                        else{
+                            
+                            Constants.appDelegate.hideActivitiIndicaterView()
+                            self.navigationController?.popViewController(animated: true)
+                        }
                     }
-                    else{
-                        Constants.appDelegate.hideActivitiIndicaterView()
-                        self.navigationController?.popViewController(animated: true)
-                    }
+                    
                 }
                 
             }
@@ -178,6 +187,44 @@ class CreateGroupViewController: UIViewController {
         self.searchBar.resignFirstResponder()
         view.endEditing(true)
     }
+    
+    @IBAction func deleteGrpBtnAxn(_ sender: Any) {
+        let alertController = UIAlertController(title: "Are you sure you want to delete group", message: "", preferredStyle: .alert)
+        alertController.addTextField { (textField : UITextField!) -> Void in
+            textField.placeholder = "Enter Reason"
+        }
+        let saveAction = UIAlertAction(title: "Delete", style: .default, handler: { alert -> Void in
+            let reason = (alertController.textFields?.first?.text!)!
+            self.queue.async {
+                let deleted  = try? Platform.getInstance().getUserManager().destroyChatRoom(roomJID: JID(jid: self.group.jid), reason: reason)
+                if deleted!{
+                    DispatchQueue.main.async {
+                        self.navigationController?.popToRootViewController(animated: true)
+                    }
+                    
+                }
+                else{
+                    DispatchQueue.main.async {
+                    let alert = UIAlertController(title: nil, message: "Unable to delete", preferredStyle: .alert)
+                    let ok = UIAlertAction(title: "OK", style:.default, handler: nil)
+                    alert.addAction(ok)
+                    self.present(alert, animated: true, completion: nil)
+                    }
+                }
+                
+            }
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action : UIAlertAction!) -> Void in })
+        
+        alertController.addAction(saveAction)
+        alertController.addAction(cancelAction)
+        
+        self.present(alertController, animated: true, completion: nil)
+        
+        
+    }
+    
+    
     
 }
 

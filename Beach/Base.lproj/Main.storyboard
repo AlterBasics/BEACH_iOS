@@ -1383,7 +1383,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="lDw-AI-Czd">
-                                        <rect key="frame" x="0.0" y="85.5" width="375" height="393.5"/>
+                                        <rect key="frame" x="0.0" y="85.5" width="375" height="353.5"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="rbY-Ie-vz0"/>
@@ -1438,6 +1438,17 @@
                                             </tableViewCell>
                                         </prototypes>
                                     </tableView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VNV-HC-I3D">
+                                        <rect key="frame" x="0.0" y="439" width="375" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="0om-1Z-ySB"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                                        <state key="normal" title="Delete Group"/>
+                                        <connections>
+                                            <action selector="deleteGrpBtnAxn:" destination="8Xa-iQ-rIK" eventType="touchUpInside" id="csr-pp-23l"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -1456,6 +1467,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="bZn-5Y-rXm"/>
                     <connections>
+                        <outlet property="deleteGroupBtn" destination="VNV-HC-I3D" id="Xce-Dj-PUg"/>
                         <outlet property="groupSubjectLbl" destination="jOH-76-aNK" id="FXI-3w-4We"/>
                         <outlet property="membersTableView" destination="lDw-AI-Czd" id="HJN-Hr-Uyx"/>
                         <outlet property="searchBar" destination="I5I-Q1-sRL" id="q0g-5c-f4m"/>

@@ -41,7 +41,7 @@ class LoginViewController: UIViewController,UITextFieldDelegate {
     func login(){
         do{
             
-            SDKLoader.loadSDK(server: "188.166.251.121", port: 5222)
+            SDKLoader.loadSDK(serverIP: "188.166.251.121", port: 5222)
             try Platform.getInstance().getUserManager().login(userName: usernameTextField.text!, password: password.text!,  domain:"alterbasics.com", success: { (String) in
                 do {
                     _ = try Platform.getInstance().getUserManager().getFullRoster()
